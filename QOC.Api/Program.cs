@@ -1,0 +1,45 @@
+using Microsoft.AspNetCore.Identity;
+using QOC.Domain.Entities;
+using QOC.Infrastructure.Persistence;
+using QOC.Infrastructure.Services;
+
+var builder = WebApplication.CreateBuilder(args);
+
+// Add Identity & JWT
+builder.Services.AddIdentityInfrastructure(builder.Configuration);
+
+// Add services to the container.
+
+builder.Services.AddScoped<AuthService>();
+builder.Services.AddScoped<UserService>();
+builder.Services.AddScoped<RoleService>();
+builder.Services.AddControllers();
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
+
+
+var app = builder.Build();
+
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    var userManager = services.GetRequiredService<UserManager<ApplicationUser>>();
+    var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
+    await DbInitializer.SeedRolesAndAdmin(userManager, roleManager);
+}
+
+// Configure the HTTP request pipeline.
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI();
+}
+
+app.UseHttpsRedirection();
+
+app.UseAuthentication();
+app.UseAuthorization();
+
+app.MapControllers();
+
+app.Run();
