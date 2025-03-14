@@ -63,23 +63,30 @@ namespace QOC.Infrastructure.Services
             }
 
             _logger.LogInformation("User logged in successfully: {Email}", user.Email);
-            return GenerateJwtToken(user);
+            return await GenerateJwtToken(user);
         }
 
-        private string GenerateJwtToken(ApplicationUser user)
+        public async Task<string> GenerateJwtToken(ApplicationUser user)
         {
-            var key = Encoding.UTF8.GetBytes(_configuration["Jwt:Secret"]);
-            var claims = new[]
+            var roles = await _userManager.GetRolesAsync(user);
+            var roleClaims = roles.Select(role => new Claim(ClaimTypes.Role, role)).ToList();
+
+            var claims = new List<Claim>
             {
                 new Claim(JwtRegisteredClaimNames.Sub, user.Id),
                 new Claim(JwtRegisteredClaimNames.Email, user.Email),
-                new Claim(JwtRegisteredClaimNames.Name, user.FullName)
-            };
+                new Claim(JwtRegisteredClaimNames.Name, user.UserName)
+            }.Concat(roleClaims);
+
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Secret"]));
+            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
             var token = new JwtSecurityToken(
-                expires: DateTime.UtcNow.AddHours(_configuration.GetValue<int>("Jwt:ExpiryHours", 2)),
+                issuer: _configuration["Jwt:Issuer"],
+                audience: _configuration["Jwt:Audience"],
                 claims: claims,
-                signingCredentials: new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256)
+                expires: DateTime.UtcNow.AddHours(1),
+                signingCredentials: creds
             );
 
             return new JwtSecurityTokenHandler().WriteToken(token);

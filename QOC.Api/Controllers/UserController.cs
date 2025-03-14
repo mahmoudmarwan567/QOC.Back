@@ -5,9 +5,9 @@ using QOC.Infrastructure.Services;
 
 namespace QOC.Api.Controllers
 {
-    [Authorize(Roles = "Admin")]
     [Route("api/users")]
     [ApiController]
+    [Authorize(Roles = "Admin")]
     public class UserController : ControllerBase
     {
         private readonly UserService _userService;

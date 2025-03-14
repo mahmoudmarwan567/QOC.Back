@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using QOC.Application.DTOs.User;
 using QOC.Domain.Entities;
@@ -21,13 +20,24 @@ namespace QOC.Infrastructure.Services
 
         public async Task<List<UserDto>> GetAllUsersAsync()
         {
-            var users = await _userManager.Users.ToListAsync();
-            return users.Select(user => new UserDto
+            var users = _userManager.Users.ToList();
+
+            var userList = new List<UserDto>();
+
+            foreach (var user in users)
             {
-                Id = user.Id,
-                UserName = user.UserName,
-                Email = user.Email
-            }).ToList();
+                var roles = await _userManager.GetRolesAsync(user);
+
+                userList.Add(new UserDto
+                {
+                    Id = user.Id,
+                    UserName = user.UserName,
+                    Email = user.Email,
+                    Roles = roles.ToList()
+                });
+            }
+
+            return userList;
         }
 
         public async Task<UserDto> GetUserByIdAsync(string userId)
