@@ -61,7 +61,6 @@ namespace QOC.Infrastructure.Services
 
         public async Task<IdentityResult> CreateUserAsync(string fullName, string email, string password, string role)
         {
-
             if (string.IsNullOrWhiteSpace(fullName))
                 throw new ArgumentException("full name cannot be null or empty", nameof(fullName));
             if (string.IsNullOrWhiteSpace(email))
@@ -70,6 +69,14 @@ namespace QOC.Infrastructure.Services
                 throw new ArgumentException("Password cannot be null or empty", nameof(password));
             if (string.IsNullOrWhiteSpace(role))
                 throw new ArgumentException("Role cannot be null or empty", nameof(role));
+
+            var existingUser = await _userManager.FindByNameAsync(fullName);
+            if (existingUser != null)
+                return IdentityResult.Failed(new IdentityError { Description = "Username is already taken" });
+
+            existingUser = await _userManager.FindByEmailAsync(email);
+            if (existingUser != null)
+                return IdentityResult.Failed(new IdentityError { Description = "Email is already in use" });
 
             var user = new ApplicationUser { UserName = email, Email = email, FullName = fullName };
 
