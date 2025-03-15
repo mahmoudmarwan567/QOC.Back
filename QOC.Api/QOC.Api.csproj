@@ -26,4 +26,8 @@
     <ProjectReference Include="..\QOC.Infrastructure\QOC.Infrastructure.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Resources\" />
+  </ItemGroup>
+
 </Project>

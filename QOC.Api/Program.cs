@@ -1,9 +1,7 @@
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Localization;
 using QOC.Domain.Entities;
 using QOC.Infrastructure.Persistence;
 using QOC.Infrastructure.Services;
-using System.Globalization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -29,20 +27,20 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-var supportedCultures = new[]
-{
-    new CultureInfo("en"),
-    new CultureInfo("ar")
-};
+//var supportedCultures = new[]
+//{
+//    new CultureInfo("en"),
+//    new CultureInfo("ar")
+//};
 
-builder.Services.AddLocalization(options => options.ResourcesPath = "Resources");
+//builder.Services.AddLocalization(options => options.ResourcesPath = "Resources");
 
-builder.Services.Configure<RequestLocalizationOptions>(options =>
-{
-    options.DefaultRequestCulture = new RequestCulture("en");
-    options.SupportedCultures = supportedCultures;
-    options.SupportedUICultures = supportedCultures;
-});
+//builder.Services.Configure<RequestLocalizationOptions>(options =>
+//{
+//    options.DefaultRequestCulture = new RequestCulture("en");
+//    options.SupportedCultures = supportedCultures;
+//    options.SupportedUICultures = supportedCultures;
+//});
 
 var app = builder.Build();
 
