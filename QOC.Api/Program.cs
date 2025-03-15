@@ -59,9 +59,9 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseCors("AllowAngularClient");
 app.UseHttpsRedirection();
 app.UseRequestLocalization();
+app.UseCors("AllowAngularClient");
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
