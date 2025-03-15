@@ -36,7 +36,7 @@ namespace QOC.Api.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateUser([FromBody] CreateUserRequest request)
         {
-            var result = await _userService.CreateUserAsync(request.Email, request.Password, request.Role);
+            var result = await _userService.CreateUserAsync(request.FullName, request.Email, request.Password, request.Role);
             if (!result.Succeeded) return BadRequest(result.Errors);
 
             return Ok(new { Message = "User created successfully" });

@@ -7,6 +7,9 @@ namespace QOC.Application.DTOs.User
         [Required(ErrorMessage = "Username is required")]
         [MinLength(3, ErrorMessage = "Username must be at least 3 characters")]
         public string UserName { get; set; }
+        [Required(ErrorMessage = "FullName is required")]
+        [MinLength(3, ErrorMessage = "FullName must be at least 3 characters")]
+        public string FullName { get; set; }
 
         [Required(ErrorMessage = "Email is required")]
         [EmailAddress(ErrorMessage = "Invalid email format")]

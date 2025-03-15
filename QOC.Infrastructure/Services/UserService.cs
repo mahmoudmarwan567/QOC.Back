@@ -32,6 +32,7 @@ namespace QOC.Infrastructure.Services
                 {
                     Id = user.Id,
                     UserName = user.UserName,
+                    FullName = user.FullName,
                     Email = user.Email,
                     Roles = roles.ToList()
                 });
@@ -47,17 +48,22 @@ namespace QOC.Infrastructure.Services
 
             var user = await _userManager.FindByIdAsync(userId);
             if (user == null) return null;
-
+            var roles = await _userManager.GetRolesAsync(user);
             return new UserDto
             {
                 Id = user.Id,
                 UserName = user.UserName,
-                Email = user.Email
+                FullName = user.FullName,
+                Email = user.Email,
+                Roles = roles.ToList()
             };
         }
 
-        public async Task<IdentityResult> CreateUserAsync(string email, string password, string role)
+        public async Task<IdentityResult> CreateUserAsync(string fullName, string email, string password, string role)
         {
+
+            if (string.IsNullOrWhiteSpace(fullName))
+                throw new ArgumentException("full name cannot be null or empty", nameof(fullName));
             if (string.IsNullOrWhiteSpace(email))
                 throw new ArgumentException("Email cannot be null or empty", nameof(email));
             if (string.IsNullOrWhiteSpace(password))
@@ -65,7 +71,7 @@ namespace QOC.Infrastructure.Services
             if (string.IsNullOrWhiteSpace(role))
                 throw new ArgumentException("Role cannot be null or empty", nameof(role));
 
-            var user = new ApplicationUser { UserName = email, Email = email };
+            var user = new ApplicationUser { UserName = email, Email = email, FullName = fullName };
 
             var result = await _userManager.CreateAsync(user, password);
             if (!result.Succeeded)
@@ -103,6 +109,7 @@ namespace QOC.Infrastructure.Services
 
             user.UserName = request.UserName;
             user.Email = request.Email;
+            user.FullName = request.FullName;
 
             var updateResult = await _userManager.UpdateAsync(user);
             if (!updateResult.Succeeded)
