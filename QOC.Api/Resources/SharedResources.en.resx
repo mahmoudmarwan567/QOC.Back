@@ -1,0 +1,6 @@
+﻿namespace QOC.Api.Resources
+{
+    public class SharedResources
+    {
+    }
+}
