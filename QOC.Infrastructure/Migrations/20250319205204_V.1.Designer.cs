@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using QOC.Infrastructure.Persistence;
 
@@ -11,9 +12,11 @@ using QOC.Infrastructure.Persistence;
 namespace QOC.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250319205204_V.1")]
+    partial class V1
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -155,31 +158,6 @@ namespace QOC.Infrastructure.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("QOC.Domain.Entities.AboutUs", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("FullDescription")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ImageUrl")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("AboutUs");
-                });
-
             modelBuilder.Entity("QOC.Domain.Entities.ApplicationUser", b =>
                 {
                     b.Property<string>("Id")
@@ -249,27 +227,6 @@ namespace QOC.Infrastructure.Migrations
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
-            modelBuilder.Entity("QOC.Domain.Entities.Company", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Logo")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Companies");
-                });
-
             modelBuilder.Entity("QOC.Domain.Entities.CompanyAddress", b =>
                 {
                     b.Property<int>("Id")
@@ -282,14 +239,14 @@ namespace QOC.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("CompanyId")
+                    b.Property<int>("CompanyProfileId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CompanyId");
+                    b.HasIndex("CompanyProfileId");
 
-                    b.ToTable("CompanyAddresses");
+                    b.ToTable("CompanyAddress");
                 });
 
             modelBuilder.Entity("QOC.Domain.Entities.CompanyEmail", b =>
@@ -300,7 +257,7 @@ namespace QOC.Infrastructure.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("CompanyId")
+                    b.Property<int>("CompanyProfileId")
                         .HasColumnType("int");
 
                     b.Property<string>("Email")
@@ -309,9 +266,9 @@ namespace QOC.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CompanyId");
+                    b.HasIndex("CompanyProfileId");
 
-                    b.ToTable("CompanyEmails");
+                    b.ToTable("CompanyEmail");
                 });
 
             modelBuilder.Entity("QOC.Domain.Entities.CompanyPhone", b =>
@@ -322,21 +279,21 @@ namespace QOC.Infrastructure.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("CompanyId")
+                    b.Property<int>("CompanyProfileId")
                         .HasColumnType("int");
 
-                    b.Property<string>("PhoneNumber")
+                    b.Property<string>("Phone")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CompanyId");
+                    b.HasIndex("CompanyProfileId");
 
-                    b.ToTable("CompanyPhones");
+                    b.ToTable("CompanyPhone");
                 });
 
-            modelBuilder.Entity("QOC.Domain.Entities.Slider", b =>
+            modelBuilder.Entity("QOC.Domain.Entities.CompanyProfile", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -344,36 +301,17 @@ namespace QOC.Infrastructure.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("ButtonLink")
+                    b.Property<string>("LogoUrl")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("ButtonText")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ImageUrl")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("Subtitle")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Title")
+                    b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
-                    b.ToTable("Sliders");
+                    b.ToTable("CompanyProfiles");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -429,38 +367,38 @@ namespace QOC.Infrastructure.Migrations
 
             modelBuilder.Entity("QOC.Domain.Entities.CompanyAddress", b =>
                 {
-                    b.HasOne("QOC.Domain.Entities.Company", "Company")
+                    b.HasOne("QOC.Domain.Entities.CompanyProfile", "CompanyProfile")
                         .WithMany("Addresses")
-                        .HasForeignKey("CompanyId")
+                        .HasForeignKey("CompanyProfileId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Company");
+                    b.Navigation("CompanyProfile");
                 });
 
             modelBuilder.Entity("QOC.Domain.Entities.CompanyEmail", b =>
                 {
-                    b.HasOne("QOC.Domain.Entities.Company", "Company")
+                    b.HasOne("QOC.Domain.Entities.CompanyProfile", "CompanyProfile")
                         .WithMany("Emails")
-                        .HasForeignKey("CompanyId")
+                        .HasForeignKey("CompanyProfileId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Company");
+                    b.Navigation("CompanyProfile");
                 });
 
             modelBuilder.Entity("QOC.Domain.Entities.CompanyPhone", b =>
                 {
-                    b.HasOne("QOC.Domain.Entities.Company", "Company")
+                    b.HasOne("QOC.Domain.Entities.CompanyProfile", "CompanyProfile")
                         .WithMany("Phones")
-                        .HasForeignKey("CompanyId")
+                        .HasForeignKey("CompanyProfileId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Company");
+                    b.Navigation("CompanyProfile");
                 });
 
-            modelBuilder.Entity("QOC.Domain.Entities.Company", b =>
+            modelBuilder.Entity("QOC.Domain.Entities.CompanyProfile", b =>
                 {
                     b.Navigation("Addresses");
 

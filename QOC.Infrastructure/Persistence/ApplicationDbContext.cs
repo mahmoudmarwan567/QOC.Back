@@ -14,5 +14,14 @@ namespace QOC.Infrastructure.Persistence
         {
             base.OnModelCreating(builder);
         }
+        public DbSet<Company> Companies { get; set; }
+        public DbSet<CompanyAddress> CompanyAddresses { get; set; }
+        public DbSet<CompanyPhone> CompanyPhones { get; set; }
+        public DbSet<CompanyEmail> CompanyEmails { get; set; }
+        public DbSet<Slider> Sliders { get; set; }
+        public DbSet<AboutUs> AboutUs { get; set; }
+
+
+
     }
 }
