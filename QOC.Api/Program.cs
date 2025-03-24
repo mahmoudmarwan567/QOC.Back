@@ -20,6 +20,7 @@ builder.Services.AddCors(options =>
 builder.Services.AddIdentityInfrastructure(builder.Configuration);
 
 // Add services to the container.
+builder.Services.AddScoped<IServiceService, ServiceService>();
 builder.Services.AddScoped<IAboutUsService, AboutUsService>();
 builder.Services.AddScoped<ISliderService, SliderService>();
 builder.Services.AddScoped<ICompanyService, CompanyService>();

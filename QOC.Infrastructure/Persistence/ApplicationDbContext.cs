@@ -14,6 +14,8 @@ namespace QOC.Infrastructure.Persistence
         {
             base.OnModelCreating(builder);
         }
+        public DbSet<Service> Services { get; set; }
+
         public DbSet<Company> Companies { get; set; }
         public DbSet<CompanyAddress> CompanyAddresses { get; set; }
         public DbSet<CompanyPhone> CompanyPhones { get; set; }
