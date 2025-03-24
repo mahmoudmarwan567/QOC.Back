@@ -1,14 +1,8 @@
-﻿using QOC.Domain.Entities;
-using QOC.Infrastructure.Persistence;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
 using QOC.Application.DTOs;    // المسار للـ DTOs
 using QOC.Domain.Entities;
-
-using Microsoft.EntityFrameworkCore;
+using QOC.Infrastructure.Persistence;
 
 
 
@@ -19,10 +13,11 @@ namespace QOC.Infrastructure.Services
     public class CompanyService : ICompanyService
     {
         private readonly ApplicationDbContext _context;
-
-        public CompanyService(ApplicationDbContext context)
+        private readonly IWebHostEnvironment _environment;
+        public CompanyService(ApplicationDbContext context, IWebHostEnvironment environment)
         {
             _context = context;
+            _environment = environment;
         }
         public async Task<IEnumerable<Company>> GetAllCompaniesAsync()
         {
@@ -34,15 +29,31 @@ namespace QOC.Infrastructure.Services
         }
         public async Task<Company> CreateCompanyAsync(CompanyDto dto)
         {
-            // تحويل DTO -> Entity
+            if (dto.LogoFile == null || dto.LogoFile.Length == 0)
+                throw new ArgumentException("لم يتم اختيار صورة");
+
+            var uploadsFolder = Path.Combine(_environment.WebRootPath, "assets/images");
+
+            if (!Directory.Exists(uploadsFolder))
+                Directory.CreateDirectory(uploadsFolder);
+
+            var fileName = $"{Guid.NewGuid()}{Path.GetExtension(dto.LogoFile.FileName)}";
+            var filePath = Path.Combine(uploadsFolder, fileName);
+
+            using (var stream = new FileStream(filePath, FileMode.Create))
+            {
+                await dto.LogoFile.CopyToAsync(stream);
+            }
+
+            var logoPath = $"/assets/images/{fileName}";
+
             var company = new Company
             {
                 Name = dto.Name,
-                Logo = dto.Logo,
-                // تحويل القوائم (Addresses, Phones, Emails) إلى كيانات فرعية
-                Addresses = dto.Addresses.Select(a => new CompanyAddress { Address = a }).ToList(),
-                Phones = dto.Phones.Select(p => new CompanyPhone { PhoneNumber = p }).ToList(),
-                Emails = dto.Emails.Select(e => new CompanyEmail { Email = e }).ToList()
+                Logo = logoPath,
+                Addresses = dto.Addresses?.Select(a => new CompanyAddress { Address = a }).ToList() ?? new List<CompanyAddress>(),
+                Phones = dto.Phones?.Select(p => new CompanyPhone { PhoneNumber = p }).ToList() ?? new List<CompanyPhone>(),
+                Emails = dto.Emails?.Select(e => new CompanyEmail { Email = e }).ToList() ?? new List<CompanyEmail>()
             };
 
             _context.Companies.Add(company);
@@ -62,26 +73,49 @@ namespace QOC.Infrastructure.Services
         public async Task<Company> UpdateCompanyAsync(int id, CompanyDto dto)
         {
             var company = await _context.Companies
-                .Include(c => c.Addresses)
-                .Include(c => c.Phones)
-                .Include(c => c.Emails)
-                .FirstOrDefaultAsync(c => c.Id == id);
+        .Include(c => c.Addresses)
+        .Include(c => c.Phones)
+        .Include(c => c.Emails)
+        .FirstOrDefaultAsync(c => c.Id == id);
 
             if (company == null) return null;
 
-            // تعديل البيانات الأساسية
             company.Name = dto.Name;
-            company.Logo = dto.Logo;
 
-            // حذف القوائم القديمة وإضافة الجديدة (أو إجراء منطق أكثر دقة)
+            if (dto.LogoFile != null && dto.LogoFile.Length > 0)
+            {
+                var uploadsFolder = Path.Combine(_environment.WebRootPath, "assets/images");
+
+                if (!Directory.Exists(uploadsFolder))
+                    Directory.CreateDirectory(uploadsFolder);
+
+                if (!string.IsNullOrEmpty(company.Logo))
+                {
+                    var oldFilePath = Path.Combine(_environment.WebRootPath, company.Logo.TrimStart('/'));
+                    if (File.Exists(oldFilePath))
+                    {
+                        File.Delete(oldFilePath);
+                    }
+                }
+
+                var fileName = $"{Guid.NewGuid()}{Path.GetExtension(dto.LogoFile.FileName)}";
+                var filePath = Path.Combine(uploadsFolder, fileName);
+
+                using (var stream = new FileStream(filePath, FileMode.Create))
+                {
+                    await dto.LogoFile.CopyToAsync(stream);
+                }
+                company.Logo = $"/assets/images/{fileName}";
+            }
+
             company.Addresses.Clear();
-            company.Addresses = dto.Addresses.Select(a => new CompanyAddress { Address = a }).ToList();
+            company.Addresses = dto.Addresses?.Select(a => new CompanyAddress { Address = a }).ToList() ?? new List<CompanyAddress>();
 
             company.Phones.Clear();
-            company.Phones = dto.Phones.Select(p => new CompanyPhone { PhoneNumber = p }).ToList();
+            company.Phones = dto.Phones?.Select(p => new CompanyPhone { PhoneNumber = p }).ToList() ?? new List<CompanyPhone>();
 
             company.Emails.Clear();
-            company.Emails = dto.Emails.Select(e => new CompanyEmail { Email = e }).ToList();
+            company.Emails = dto.Emails?.Select(e => new CompanyEmail { Email = e }).ToList() ?? new List<CompanyEmail>();
 
             await _context.SaveChangesAsync();
             return company;
