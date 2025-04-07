@@ -1,6 +1,8 @@
 using Microsoft.AspNetCore.Identity;
 using QOC.Application.Interfaces;
 using QOC.Domain.Entities;
+using QOC.Infrastructure.Contracts;
+using QOC.Infrastructure.Mapping;
 using QOC.Infrastructure.Persistence;
 using QOC.Infrastructure.Services;
 
@@ -20,12 +22,14 @@ builder.Services.AddCors(options =>
 builder.Services.AddIdentityInfrastructure(builder.Configuration);
 
 // Add services to the container.
+builder.Services.AddScoped<IProjectService, ProjectService>();
 builder.Services.AddScoped<IAboutUsService, AboutUsService>();
 builder.Services.AddScoped<ISliderService, SliderService>();
 builder.Services.AddScoped<ICompanyService, CompanyService>();
 builder.Services.AddScoped<AuthService>();
 builder.Services.AddScoped<UserService>();
 builder.Services.AddScoped<RoleService>();
+builder.Services.AddAutoMapper(typeof(MappingProfile));
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
