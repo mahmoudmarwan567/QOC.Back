@@ -12,8 +12,8 @@ using QOC.Infrastructure.Persistence;
 namespace QOC.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250324122817_A5")]
-    partial class A5
+    [Migration("20250407203540_M1")]
+    partial class M1
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -339,6 +339,49 @@ namespace QOC.Infrastructure.Migrations
                     b.ToTable("CompanyPhones");
                 });
 
+            modelBuilder.Entity("QOC.Domain.Entities.Project.Project", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("ProjectDescription")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ProjectName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Projects");
+                });
+
+            modelBuilder.Entity("QOC.Domain.Entities.Project.ProjectImage", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("ImagePath")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("ProjectId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProjectId");
+
+                    b.ToTable("ProjectImages");
+                });
+
             modelBuilder.Entity("QOC.Domain.Entities.Service", b =>
                 {
                     b.Property<int>("Id")
@@ -491,6 +534,17 @@ namespace QOC.Infrastructure.Migrations
                     b.Navigation("Company");
                 });
 
+            modelBuilder.Entity("QOC.Domain.Entities.Project.ProjectImage", b =>
+                {
+                    b.HasOne("QOC.Domain.Entities.Project.Project", "Project")
+                        .WithMany("ProjectImages")
+                        .HasForeignKey("ProjectId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Project");
+                });
+
             modelBuilder.Entity("QOC.Domain.Entities.Company", b =>
                 {
                     b.Navigation("Addresses");
@@ -498,6 +552,11 @@ namespace QOC.Infrastructure.Migrations
                     b.Navigation("Emails");
 
                     b.Navigation("Phones");
+                });
+
+            modelBuilder.Entity("QOC.Domain.Entities.Project.Project", b =>
+                {
+                    b.Navigation("ProjectImages");
                 });
 #pragma warning restore 612, 618
         }

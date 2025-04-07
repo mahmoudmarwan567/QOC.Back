@@ -20,6 +20,7 @@ namespace QOC.Infrastructure.Persistence
         public DbSet<AboutUs> AboutUs { get; set; }
         public DbSet<Project> Projects { get; set; }
         public DbSet<ProjectImage> ProjectImages { get; set; }
+        public DbSet<Service> Services { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
