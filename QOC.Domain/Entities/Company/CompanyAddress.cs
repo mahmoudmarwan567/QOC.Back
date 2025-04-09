@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Text.Json.Serialization;
-using System.Threading.Tasks;
+﻿using System.Text.Json.Serialization;
 
 namespace QOC.Domain.Entities
 {
@@ -11,8 +6,6 @@ namespace QOC.Domain.Entities
     {
         public int Id { get; set; }
         public string Address { get; set; }
-
-        // الربط مع الشركة
         public int CompanyId { get; set; }
         [JsonIgnore]
         public Company Company { get; set; }

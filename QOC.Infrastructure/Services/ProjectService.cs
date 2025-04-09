@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using QOC.Application.DTOs.Project;
 using QOC.Domain.Entities.Project;
@@ -47,11 +46,9 @@ namespace QOC.Infrastructure.Services
 
             foreach (var imageDto in projectDto.ProjectImages)
             {
-                if (imageDto.ImageFile != null)
+                if (imageDto.ImagePath != null)
                 {
-                    var filePath = await SaveImageAsync(imageDto.ImageFile);
-
-                    var projectImage = new ProjectImage { ImagePath = filePath };
+                    var projectImage = new ProjectImage { ImagePath = imageDto.ImagePath };
                     projectImages.Add(projectImage);
                 }
             }
@@ -75,22 +72,33 @@ namespace QOC.Infrastructure.Services
             project.ProjectDescription = projectDto.ProjectDescription;
 
             // Handle image updates
-            var existingImagePaths = project.ProjectImages.Select(pi => pi.ImagePath).ToList();
             var newImages = new List<ProjectImage>();
             var imagesToDelete = new List<ProjectImage>();
 
             foreach (var imageDto in projectDto.ProjectImages)
             {
-                if (imageDto.Image != null)
+                if (!string.IsNullOrEmpty(imageDto.ImagePath))
                 {
-                    var filePath = await SaveImageAsync(imageDto.Image);
-                    newImages.Add(new ProjectImage { ImagePath = filePath });
+                    // Add new images
+                    if (imageDto.Id == 0)
+                    {
+                        newImages.Add(new ProjectImage { ImagePath = imageDto.ImagePath });
+                    }
+                    else
+                    {
+                        // Update existing images if needed
+                        var existingImage = project.ProjectImages.FirstOrDefault(pi => pi.Id == imageDto.Id);
+                        if (existingImage != null && existingImage.ImagePath != imageDto.ImagePath)
+                        {
+                            existingImage.ImagePath = imageDto.ImagePath;
+                        }
+                    }
                 }
             }
 
             foreach (var existingImage in project.ProjectImages)
             {
-                if (!projectDto.ProjectImages.Any(pi => pi.Image == null && pi.ImagePath == existingImage.ImagePath))
+                if (!projectDto.ProjectImages.Any(pi => pi.Id == existingImage.Id))
                 {
                     imagesToDelete.Add(existingImage);
                 }
@@ -98,7 +106,6 @@ namespace QOC.Infrastructure.Services
 
             foreach (var image in imagesToDelete)
             {
-                DeleteImage(image.ImagePath);
                 project.ProjectImages.Remove(image);
             }
 
@@ -121,40 +128,12 @@ namespace QOC.Infrastructure.Services
 
             foreach (var image in project.ProjectImages)
             {
-                DeleteImage(image.ImagePath);
+                _context.ProjectImages.Remove(image);
             }
 
             _context.Projects.Remove(project);
             await _context.SaveChangesAsync();
             return true;
-        }
-
-        private async Task<string> SaveImageAsync(IFormFile file)
-        {
-            string uploadsFolder = Path.Combine(_env.WebRootPath, "assets/images");
-            Directory.CreateDirectory(uploadsFolder);
-
-            string fileName = $"{Guid.NewGuid()}{Path.GetExtension(file.FileName)}";
-            string filePath = Path.Combine(uploadsFolder, fileName);
-
-            using (var stream = new FileStream(filePath, FileMode.Create))
-            {
-                await file.CopyToAsync(stream);
-            }
-
-            return $"/assets/images/{fileName}";
-        }
-
-        private void DeleteImage(string? imagePath)
-        {
-            if (!string.IsNullOrEmpty(imagePath))
-            {
-                string fullPath = Path.Combine(_env.WebRootPath, imagePath.TrimStart('/'));
-                if (File.Exists(fullPath))
-                {
-                    File.Delete(fullPath);
-                }
-            }
         }
     }
 }
