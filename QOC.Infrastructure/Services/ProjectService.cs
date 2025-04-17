@@ -41,7 +41,8 @@ namespace QOC.Infrastructure.Services
             {
                 ProjectName = projectDto.ProjectName,
                 ProjectDescription = projectDto.ProjectDescription,
-                ProjectCategoryId = projectDto.ProjectCategoryId
+                ProjectCategoryId = projectDto.ProjectCategoryId,
+                ProjectProperties = projectDto.ProjectProperties,
             };
             var projectImages = new List<ProjectImage>();
 
@@ -72,6 +73,7 @@ namespace QOC.Infrastructure.Services
             project.ProjectName = projectDto.ProjectName;
             project.ProjectDescription = projectDto.ProjectDescription;
             project.ProjectCategoryId = projectDto.ProjectCategoryId;
+            project.ProjectProperties = projectDto.ProjectProperties;
 
             // Handle image updates
             var newImages = new List<ProjectImage>();

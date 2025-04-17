@@ -57,7 +57,7 @@ namespace QOC.Api.Controllers
             if (file == null || file.Length == 0)
                 return BadRequest("Invalid file");
 
-            var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/images");
+            var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/images/Slider");
             if (!Directory.Exists(uploadsFolder))
                 Directory.CreateDirectory(uploadsFolder);
 
