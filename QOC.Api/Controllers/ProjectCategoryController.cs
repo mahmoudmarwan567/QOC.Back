@@ -53,18 +53,45 @@ namespace QOC.Api.Controllers
             return Ok(updated);
         }
 
-        // DELETE: api/ProjectCategory/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
-            await _service.DeleteAsync(id);
-            return NoContent();
+            var result = await _service.DeleteAsync(id);
+
+            return result switch
+            {
+                "Category not found." => NotFound(new { message = result }),
+                "Cannot delete. There are related projects." => BadRequest(new { message = result }),
+                "Category deleted successfully." => Ok(new { message = result }),
+                _ => StatusCode(500, new { message = "An unexpected error occurred." })
+            };
         }
         [HttpGet("basic")]
         public async Task<ActionResult<IEnumerable<ResponseBasicProjectCategoryDto>>> GetBasic()
         {
             var categories = await _service.GetAllWithoutProjectsAsync();
             return Ok(categories);
+        }
+        [HttpPost("upload")]
+        public async Task<IActionResult> UploadImage(IFormFile file)
+        {
+            if (file == null || file.Length == 0)
+                return BadRequest("Invalid file");
+
+            var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/images/ProjectCategory");
+            if (!Directory.Exists(uploadsFolder))
+                Directory.CreateDirectory(uploadsFolder);
+
+            var uniqueFileName = Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
+            var filePath = Path.Combine(uploadsFolder, uniqueFileName);
+
+            using (var stream = new FileStream(filePath, FileMode.Create))
+            {
+                await file.CopyToAsync(stream);
+            }
+
+            var imageUrl = $"/images/ProjectCategory/{uniqueFileName}";
+            return Ok(new { imageUrl });
         }
     }
 }
