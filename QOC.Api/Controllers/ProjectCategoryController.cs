@@ -58,7 +58,7 @@ namespace QOC.Api.Controllers
         public async Task<IActionResult> Delete(int id)
         {
             await _service.DeleteAsync(id);
-            return Ok("Deleted Successfully");
+            return NoContent();
         }
         [HttpGet("basic")]
         public async Task<ActionResult<IEnumerable<ResponseBasicProjectCategoryDto>>> GetBasic()

@@ -12,8 +12,8 @@ using QOC.Infrastructure.Persistence;
 namespace QOC.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250417174257_m5")]
-    partial class m5
+    [Migration("20250417214332_M5")]
+    partial class M5
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -381,6 +381,10 @@ namespace QOC.Infrastructure.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ProjectName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ProjectProperties")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
