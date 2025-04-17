@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
 using QOC.Application.DTOs.Project;
+using QOC.Application.DTOs.ProjectCategory;
+using QOC.Domain.Entities;
 using QOC.Domain.Entities.Project;
 
 namespace QOC.Infrastructure.Mapping
@@ -14,6 +16,11 @@ namespace QOC.Infrastructure.Mapping
             CreateMap<ProjectUpdateDto, Project>()
                 .ForMember(dest => dest.ProjectImages, opt => opt.Ignore());
 
+
+            CreateMap<ProjectCategory, ResponseProjectCategoryDto>()
+                .ForMember(dest => dest.Project, opt => opt.Ignore());
+
+            CreateMap<RequestProjectCategoryDto, ProjectCategory>();
         }
     }
 }
