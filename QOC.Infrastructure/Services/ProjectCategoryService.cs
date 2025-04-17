@@ -30,6 +30,7 @@ namespace QOC.Infrastructure.Services
                 Id = category.Id,
                 Name = category.Name,
                 Description = category.Description,
+                ImagePath = category.ImagePath,
                 Project = category.Projects.Select(p => new ResponseSingleProjectDto
                 {
                     Id = p.Id,
@@ -58,6 +59,7 @@ namespace QOC.Infrastructure.Services
                 Id = category.Id,
                 Name = category.Name,
                 Description = category.Description,
+                ImagePath = category.ImagePath,
                 Project = project
             };
         }
@@ -84,14 +86,24 @@ namespace QOC.Infrastructure.Services
             return _mapper.Map<ResponseProjectCategoryDto>(category);
         }
 
-        public async Task DeleteAsync(int id)
+        public async Task<string> DeleteAsync(int id)
         {
-            var category = await _context.ProjectCategories.FindAsync(id);
-            if (category == null) return;
+            var category = await _context.ProjectCategories
+                .Include(c => c.Projects)
+                .FirstOrDefaultAsync(c => c.Id == id);
+
+            if (category == null)
+                return "Category not found.";
+
+            if (category.Projects != null && category.Projects.Any())
+                return "Cannot delete. There are related projects.";
 
             _context.ProjectCategories.Remove(category);
             await _context.SaveChangesAsync();
+
+            return "Category deleted successfully.";
         }
+
         public async Task<List<ResponseBasicProjectCategoryDto>> GetAllWithoutProjectsAsync()
         {
             var categories = await _context.ProjectCategories.ToListAsync();
