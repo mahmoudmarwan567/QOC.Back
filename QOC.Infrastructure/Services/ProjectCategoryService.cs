@@ -92,5 +92,10 @@ namespace QOC.Infrastructure.Services
             _context.ProjectCategories.Remove(category);
             await _context.SaveChangesAsync();
         }
+        public async Task<List<ResponseBasicProjectCategoryDto>> GetAllWithoutProjectsAsync()
+        {
+            var categories = await _context.ProjectCategories.ToListAsync();
+            return _mapper.Map<List<ResponseBasicProjectCategoryDto>>(categories);
+        }
     }
 }

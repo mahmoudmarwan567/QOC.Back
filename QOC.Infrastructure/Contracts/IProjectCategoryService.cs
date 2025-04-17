@@ -9,5 +9,6 @@ namespace QOC.Infrastructure.Contracts
         Task<ResponseProjectCategoryDto> CreateAsync(RequestProjectCategoryDto dto);
         Task<ResponseProjectCategoryDto?> UpdateAsync(int id, RequestProjectCategoryDto dto);
         Task DeleteAsync(int id);
+        Task<List<ResponseBasicProjectCategoryDto>> GetAllWithoutProjectsAsync();
     }
 }

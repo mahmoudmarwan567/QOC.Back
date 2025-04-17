@@ -60,5 +60,11 @@ namespace QOC.Api.Controllers
             await _service.DeleteAsync(id);
             return Ok("Deleted Successfully");
         }
+        [HttpGet("basic")]
+        public async Task<ActionResult<IEnumerable<ResponseBasicProjectCategoryDto>>> GetBasic()
+        {
+            var categories = await _service.GetAllWithoutProjectsAsync();
+            return Ok(categories);
+        }
     }
 }
