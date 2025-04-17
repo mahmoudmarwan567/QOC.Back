@@ -69,7 +69,7 @@ namespace QOC.Api.Controllers
                 await file.CopyToAsync(stream);
             }
 
-            var imageUrl = $"/images/{uniqueFileName}"; // To be served as static file
+            var imageUrl = $"/images/Slider/{uniqueFileName}"; // To be served as static file
             return Ok(new { imageUrl });
         }
 
