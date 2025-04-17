@@ -73,7 +73,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 app.UseStaticFiles();
-
+app.UseDeveloperExceptionPage();
 app.UseHttpsRedirection();
 app.UseRequestLocalization();
 app.UseCors("AllowAngularClient");
