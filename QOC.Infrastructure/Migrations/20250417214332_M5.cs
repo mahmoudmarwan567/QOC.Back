@@ -5,7 +5,7 @@
 namespace QOC.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class m5 : Migration
+    public partial class M5 : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -16,6 +16,13 @@ namespace QOC.Infrastructure.Migrations
                 type: "int",
                 nullable: false,
                 defaultValue: 0);
+
+            migrationBuilder.AddColumn<string>(
+                name: "ProjectProperties",
+                table: "Projects",
+                type: "nvarchar(max)",
+                nullable: false,
+                defaultValue: "");
 
             migrationBuilder.CreateTable(
                 name: "ProjectCategories",
@@ -61,6 +68,10 @@ namespace QOC.Infrastructure.Migrations
 
             migrationBuilder.DropColumn(
                 name: "ProjectCategoryId",
+                table: "Projects");
+
+            migrationBuilder.DropColumn(
+                name: "ProjectProperties",
                 table: "Projects");
         }
     }
