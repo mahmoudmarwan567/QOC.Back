@@ -19,6 +19,15 @@ builder.Services.AddCors(options =>
               .AllowCredentials();
     });
 });
+builder.Services.AddLocalization(options => options.ResourcesPath = "Resources");
+
+builder.Services.Configure<RequestLocalizationOptions>(options =>
+{
+    var supportedCultures = new[] { "en", "ar" };
+    options.SetDefaultCulture("en")
+           .AddSupportedCultures(supportedCultures)
+           .AddSupportedUICultures(supportedCultures);
+});
 // Add Identity & JWT
 builder.Services.AddIdentityInfrastructure(builder.Configuration);
 
@@ -29,6 +38,8 @@ builder.Services.AddScoped<ISliderService, SliderService>();
 builder.Services.AddScoped<ICompanyService, CompanyService>();
 builder.Services.AddScoped<IServiceService, ServiceService>();
 builder.Services.AddScoped<IProjectCategoryService, ProjectCategoryService>();
+builder.Services.AddScoped<IGalleryService, GalleryService>();
+builder.Services.AddScoped<ISectionService, SectionService>();
 builder.Services.AddScoped<AuthService>();
 builder.Services.AddScoped<UserService>();
 builder.Services.AddScoped<RoleService>();
@@ -37,20 +48,6 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-//var supportedCultures = new[]
-//{
-//    new CultureInfo("en"),
-//    new CultureInfo("ar")
-//};
-
-//builder.Services.AddLocalization(options => options.ResourcesPath = "Resources");
-
-//builder.Services.Configure<RequestLocalizationOptions>(options =>
-//{
-//    options.DefaultRequestCulture = new RequestCulture("en");
-//    options.SupportedCultures = supportedCultures;
-//    options.SupportedUICultures = supportedCultures;
-//});
 
 var app = builder.Build();
 
@@ -79,6 +76,7 @@ app.UseDeveloperExceptionPage();
 app.UseHttpsRedirection();
 app.UseRequestLocalization();
 app.UseCors("AllowAngularClient");
+app.UseRequestLocalization();
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
