@@ -30,14 +30,14 @@ namespace QOC.Api.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<ProjectResponseDto>> CreateProject([FromForm] CreateProjectDto projectDto)
+        public async Task<ActionResult<ProjectResponseDto>> CreateProject([FromBody] CreateProjectDto projectDto)
         {
             var result = await _projectService.CreateProjectAsync(projectDto);
             return Ok(result);
         }
 
         [HttpPut("{id}")]
-        public async Task<ActionResult<ProjectResponseDto>> UpdateProject(int id, [FromForm] ProjectUpdateDto projectDto)
+        public async Task<ActionResult<ProjectResponseDto>> UpdateProject(int id, [FromBody] ProjectUpdateDto projectDto)
         {
             if (id != projectDto.Id)
             {
@@ -59,26 +59,44 @@ namespace QOC.Api.Controllers
             if (!deleted) return NotFound();
             return NoContent();
         }
+
         [HttpPost("upload")]
-        public async Task<IActionResult> UploadImage(IFormFile file)
+        public async Task<IActionResult> UploadImages([FromForm] List<IFormFile> files)
         {
-            if (file == null || file.Length == 0)
-                return BadRequest("Invalid file");
+            if (files == null || files.Count == 0)
+                return BadRequest("No files received.");
 
             var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/images/Project");
             if (!Directory.Exists(uploadsFolder))
                 Directory.CreateDirectory(uploadsFolder);
 
-            var uniqueFileName = Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
-            var filePath = Path.Combine(uploadsFolder, uniqueFileName);
+            var uploadedUrls = new List<string>();
 
-            using (var stream = new FileStream(filePath, FileMode.Create))
+            foreach (var file in files)
             {
-                await file.CopyToAsync(stream);
+                if (file.Length > 0)
+                {
+                    var uniqueFileName = Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
+                    var filePath = Path.Combine(uploadsFolder, uniqueFileName);
+
+                    using (var stream = new FileStream(filePath, FileMode.Create))
+                    {
+                        await file.CopyToAsync(stream);
+                    }
+
+                    var imageUrl = $"/images/Project/{uniqueFileName}";
+                    uploadedUrls.Add(imageUrl);
+                }
             }
 
-            var imageUrl = $"/images/Project/{uniqueFileName}"; // To be served as static file
-            return Ok(new { imageUrl });
+            return Ok(new { imageUrls = uploadedUrls });
+        }
+
+        [HttpGet("byCategory/{categoryId}")]
+        public async Task<ActionResult<IEnumerable<ProjectResponseDto>>> GetProjectsByCategory(int categoryId)
+        {
+            var projects = await _projectService.GetProjectsByCategoryAsync(categoryId);
+            return Ok(projects);
         }
     }
 }

@@ -190,5 +190,14 @@ namespace QOC.Infrastructure.Services
             await _context.SaveChangesAsync();
             return true;
         }
+        public async Task<IEnumerable<ProjectResponseDto>> GetProjectsByCategoryAsync(int categoryId)
+        {
+            var projects = await _context.Projects
+                .Where(p => p.ProjectCategoryId == categoryId)
+                .Include(p => p.ProjectImages)
+                .ToListAsync();
+
+            return _mapper.Map<IEnumerable<ProjectResponseDto>>(projects);
+        }
     }
 }
