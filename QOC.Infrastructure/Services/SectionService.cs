@@ -2,7 +2,6 @@
 using QOC.Application.DTOs.Section;
 using QOC.Domain.Entities;
 using QOC.Infrastructure.Contracts;
-using QOC.Infrastructure.Helpers;
 using QOC.Infrastructure.Persistence;
 
 namespace QOC.Infrastructure.Services
@@ -21,7 +20,8 @@ namespace QOC.Infrastructure.Services
                 .Select(s => new SectionDto
                 {
                     Id = s.Id,
-                    Description = CultureHelper.IsArabic() ? s.DescriptionAR : s.DescriptionEN,
+                    DescriptionAR = s.DescriptionAR,
+                    DescriptionEN = s.DescriptionEN,
                     ImagePath = s.ImagePath
                 }).ToListAsync();
         }
@@ -34,7 +34,8 @@ namespace QOC.Infrastructure.Services
             return new SectionDto
             {
                 Id = section.Id,
-                Description = CultureHelper.IsArabic() ? section.DescriptionAR : section.DescriptionEN,
+                DescriptionAR = section.DescriptionAR,
+                DescriptionEN = section.DescriptionEN,
                 ImagePath = section.ImagePath
             };
         }
@@ -54,7 +55,8 @@ namespace QOC.Infrastructure.Services
             return new SectionDto
             {
                 Id = section.Id,
-                Description = CultureHelper.IsArabic() ? section.DescriptionAR : section.DescriptionEN,
+                DescriptionAR = section.DescriptionAR,
+                DescriptionEN = section.DescriptionEN,
                 ImagePath = section.ImagePath
             };
         }
@@ -74,7 +76,8 @@ namespace QOC.Infrastructure.Services
             return new SectionDto
             {
                 Id = section.Id,
-                Description = CultureHelper.IsArabic() ? section.DescriptionAR : section.DescriptionEN,
+                DescriptionAR = section.DescriptionAR,
+                DescriptionEN = section.DescriptionEN,
                 ImagePath = section.ImagePath
             };
         }
