@@ -16,7 +16,7 @@ namespace QOC.Api.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create([FromBody] CompanyDto dto)
+        public async Task<IActionResult> Create([FromBody] CompanyRequestDto dto)
         {
             var company = await _companyService.CreateCompanyAsync(dto);
             return Ok(company);
@@ -49,7 +49,7 @@ namespace QOC.Api.Controllers
 
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> Update(int id, [FromBody] CompanyDto dto)
+        public async Task<IActionResult> Update(int id, [FromBody] CompanyRequestDto dto)
         {
             var updated = await _companyService.UpdateCompanyAsync(id, dto);
             if (updated == null)

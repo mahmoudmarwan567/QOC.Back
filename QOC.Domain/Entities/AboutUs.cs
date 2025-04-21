@@ -1,16 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace QOC.Domain.Entities
+﻿namespace QOC.Domain.Entities
 {
     public class AboutUs
     {
         public int Id { get; set; }
-        public string Description { get; set; } = string.Empty;
-        public string FullDescription { get; set; } = string.Empty;
+        public string DescriptionAR { get; set; } = string.Empty;
+        public string DescriptionEN { get; set; } = string.Empty;
+        public string FullDescriptionAR { get; set; } = string.Empty;
+        public string FullDescriptionEN { get; set; } = string.Empty;
         public string ImageUrl { get; set; } = string.Empty;
     }
 }

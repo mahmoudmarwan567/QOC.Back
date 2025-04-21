@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
+using QOC.Application.DTOs.Project;
 using QOC.Application.DTOs.ProjectCategory;
 using QOC.Domain.Entities;
 using QOC.Infrastructure.Contracts;
@@ -25,18 +26,28 @@ namespace QOC.Infrastructure.Services
                     .ThenInclude(p => p.ProjectImages)
                 .ToListAsync();
 
-            return categories.Select(category => new ResponseProjectCategoryDto
+            var result = categories.Select(c => new ResponseProjectCategoryDto
             {
-                Id = category.Id,
-                Name = category.Name,
-                Description = category.Description,
-                ImagePath = category.ImagePath,
-                Project = category.Projects.Select(p => new ResponseSingleProjectDto
+                Id = c.Id,
+                NameAR = c.NameAR,
+                NameEN = c.NameEN,
+                DescriptionAR = c.DescriptionAR,
+                DescriptionEN = c.DescriptionEN,
+                ImagePath = c.ImagePath,
+                Projects = c.Projects.Select(p => new ProjectResponseDto
                 {
                     Id = p.Id,
-                    ImagePath = p.ProjectImages.FirstOrDefault()?.ImagePath
-                }).FirstOrDefault()
+                    ProjectNameAR = p.ProjectNameAR,
+                    ProjectNameEN = p.ProjectNameEN,
+                    ProjectDescriptionAR = p.ProjectDescriptionAR,
+                    ProjectDescriptionEN = p.ProjectDescriptionEN,
+                    ProjectPropertiesAR = p.ProjectPropertiesAR,
+                    ProjectPropertiesEN = p.ProjectPropertiesEN,
+                    ProjectCategoryId = p.ProjectCategoryId,
+                    ProjectImages = _mapper.Map<List<ProjectImageResponseDto>>(p.ProjectImages)
+                })
             }).ToList();
+            return result;
         }
 
         public async Task<ResponseProjectCategoryDto?> GetByIdAsync(int id)
@@ -48,30 +59,54 @@ namespace QOC.Infrastructure.Services
 
             if (category == null) return null;
 
-            var project = category.Projects.Select(p => new ResponseSingleProjectDto
-            {
-                Id = p.Id,
-                ImagePath = p.ProjectImages.FirstOrDefault()?.ImagePath
-            }).FirstOrDefault();
 
             return new ResponseProjectCategoryDto
             {
-                Id = category.Id,
-                Name = category.Name,
-                Description = category.Description,
+                Id = id,
+                NameAR = category.NameAR,
+                NameEN = category.NameEN,
+                DescriptionAR = category.DescriptionAR,
+                DescriptionEN = category.DescriptionEN,
+
                 ImagePath = category.ImagePath,
-                Project = project
+                Projects = category.Projects.Select(p => new ProjectResponseDto
+                {
+                    Id = p.Id,
+                    ProjectNameAR = p.ProjectNameAR,
+                    ProjectNameEN = p.ProjectNameEN,
+                    ProjectDescriptionAR = p.ProjectDescriptionAR,
+                    ProjectDescriptionEN = p.ProjectDescriptionEN,
+                    ProjectPropertiesAR = p.ProjectPropertiesAR,
+                    ProjectPropertiesEN = p.ProjectPropertiesEN,
+                    ProjectCategoryId = p.ProjectCategoryId,
+                    ProjectImages = _mapper.Map<List<ProjectImageResponseDto>>(p.ProjectImages)
+                })
             };
         }
 
         public async Task<ResponseProjectCategoryDto> CreateAsync(RequestProjectCategoryDto dto)
         {
-            var entity = _mapper.Map<ProjectCategory>(dto);
-
-            _context.ProjectCategories.Add(entity);
+            if (dto == null) throw new ArgumentNullException(nameof(dto));
+            var projectCategory = new ProjectCategory
+            {
+                NameAR = dto.NameAR,
+                DescriptionAR = dto.DescriptionAR,
+                NameEN = dto.NameEN,
+                DescriptionEN = dto.DescriptionEN,
+                ImagePath = dto.ImagePath
+            };
+            _context.ProjectCategories.Add(projectCategory);
             await _context.SaveChangesAsync();
 
-            return _mapper.Map<ResponseProjectCategoryDto>(entity);
+            return new ResponseProjectCategoryDto
+            {
+                Id = projectCategory.Id,
+                NameAR = dto.NameAR,
+                NameEN = dto.NameEN,
+                DescriptionAR = dto.DescriptionAR,
+                DescriptionEN = dto.DescriptionEN,
+                ImagePath = projectCategory.ImagePath
+            };
         }
 
         public async Task<ResponseProjectCategoryDto?> UpdateAsync(int id, RequestProjectCategoryDto dto)
@@ -82,8 +117,31 @@ namespace QOC.Infrastructure.Services
 
             _mapper.Map(dto, category);
             await _context.SaveChangesAsync();
-
-            return _mapper.Map<ResponseProjectCategoryDto>(category);
+            var projects = await _context.Projects
+                .Include(p => p.ProjectImages)
+                .Where(p => p.ProjectCategoryId == id)
+                .ToListAsync();
+            return new ResponseProjectCategoryDto
+            {
+                Id = id,
+                NameAR = category.NameAR,
+                NameEN = category.NameEN,
+                DescriptionAR = category.DescriptionAR,
+                DescriptionEN = category.DescriptionEN,
+                ImagePath = category.ImagePath,
+                Projects = projects.Select(p => new ProjectResponseDto
+                {
+                    Id = p.Id,
+                    ProjectNameAR = p.ProjectNameAR,
+                    ProjectNameEN = p.ProjectNameEN,
+                    ProjectDescriptionAR = p.ProjectDescriptionAR,
+                    ProjectDescriptionEN = p.ProjectDescriptionEN,
+                    ProjectPropertiesAR = p.ProjectPropertiesAR,
+                    ProjectPropertiesEN = p.ProjectPropertiesEN,
+                    ProjectCategoryId = p.ProjectCategoryId,
+                    ProjectImages = _mapper.Map<List<ProjectImageResponseDto>>(p.ProjectImages)
+                })
+            };
         }
 
         public async Task<string> DeleteAsync(int id)
@@ -107,7 +165,12 @@ namespace QOC.Infrastructure.Services
         public async Task<List<ResponseBasicProjectCategoryDto>> GetAllWithoutProjectsAsync()
         {
             var categories = await _context.ProjectCategories.ToListAsync();
-            return _mapper.Map<List<ResponseBasicProjectCategoryDto>>(categories);
+            return categories.Select(c => new ResponseBasicProjectCategoryDto
+            {
+                Id = c.Id,
+                NameAR = c.NameAR,
+                NameEN = c.NameEN,
+            }).ToList();
         }
     }
 }

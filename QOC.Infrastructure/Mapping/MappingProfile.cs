@@ -16,9 +16,7 @@ namespace QOC.Infrastructure.Mapping
             CreateMap<ProjectUpdateDto, Project>()
                 .ForMember(dest => dest.ProjectImages, opt => opt.Ignore());
 
-
-            CreateMap<ProjectCategory, ResponseProjectCategoryDto>()
-                .ForMember(dest => dest.Project, opt => opt.Ignore());
+            CreateMap<ProjectCategory, ResponseProjectCategoryDto>();
 
             CreateMap<RequestProjectCategoryDto, ProjectCategory>();
             CreateMap<ProjectCategory, ResponseBasicProjectCategoryDto>();

@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using QOC.Application.DTOs;
+using QOC.Application.DTOs.Slider;
 using QOC.Application.Interfaces;
 using QOC.Domain.Entities;
 using QOC.Infrastructure.Persistence;
@@ -21,49 +16,118 @@ namespace QOC.Infrastructure.Services
             _context = context;
         }
 
-        public async Task<IEnumerable<Slider>> GetAllSlidersAsync()
+        public async Task<IEnumerable<SliderDto>> GetAllSlidersAsync()
         {
-            return await _context.Sliders.ToListAsync();
+            var sliders = await _context.Sliders.ToListAsync();
+            return sliders.Select(s => new SliderDto
+            {
+                Id = s.Id,
+                TitleAR = s.TitleAR,
+                TitleEN = s.TitleEN,
+                SubtitleAR = s.SubtitleAR,
+                SubtitleEN = s.SubtitleEN,
+                ImageUrl = s.ImageUrl,
+                DescriptionEN = s.DescriptionEN,
+                DescriptionAR = s.DescriptionAR,
+                ButtonTextAR = s.ButtonTextAR,
+                ButtonTextEN = s.ButtonTextEN,
+                ButtonLink = s.ButtonLink,
+                IsActive = s.IsActive
+            }).ToList();
         }
 
-        public async Task<Slider> GetSliderByIdAsync(int id)
+        public async Task<SliderDto> GetSliderByIdAsync(int id)
         {
-            return await _context.Sliders.FindAsync(id);
+            var slider = await _context.Sliders.FindAsync(id);
+            if (slider == null) return null;
+            return new SliderDto
+            {
+                Id = slider.Id,
+                TitleAR = slider.TitleAR,
+                TitleEN = slider.TitleEN,
+                SubtitleAR = slider.SubtitleAR,
+                SubtitleEN = slider.SubtitleEN,
+                ImageUrl = slider.ImageUrl,
+                DescriptionEN = slider.DescriptionEN,
+                DescriptionAR = slider.DescriptionAR,
+                ButtonTextAR = slider.ButtonTextAR,
+                ButtonTextEN = slider.ButtonTextEN,
+                ButtonLink = slider.ButtonLink,
+                IsActive = slider.IsActive
+            };
         }
 
-        public async Task<Slider> CreateSliderAsync(SliderDto dto)
+        public async Task<SliderDto> CreateSliderAsync(SliderRequestDto dto)
         {
             var slider = new Slider
             {
-                Title = dto.Title,
-                Subtitle = dto.Subtitle,
+                TitleEN = dto.TitleEN,
+                TitleAR = dto.TitleAR,
+                SubtitleEN = dto.SubtitleEN,
+                SubtitleAR = dto.SubtitleAR,
                 ImageUrl = dto.ImageUrl,
-                Description = dto.Description,
-                ButtonText = dto.ButtonText,
+                DescriptionEN = dto.DescriptionEN,
+                DescriptionAR = dto.DescriptionAR,
+                ButtonTextEN = dto.ButtonTextEN,
+                ButtonTextAR = dto.ButtonTextAR,
                 ButtonLink = dto.ButtonLink,
                 IsActive = dto.IsActive
             };
 
             _context.Sliders.Add(slider);
             await _context.SaveChangesAsync();
-            return slider;
+            return new SliderDto
+            {
+                Id = slider.Id,
+                TitleAR = slider.TitleAR,
+                TitleEN = slider.TitleEN,
+                SubtitleAR = slider.SubtitleAR,
+                SubtitleEN = slider.SubtitleEN,
+                ImageUrl = slider.ImageUrl,
+                DescriptionEN = slider.DescriptionEN,
+                DescriptionAR = slider.DescriptionAR,
+                ButtonTextAR = slider.ButtonTextAR,
+                ButtonTextEN = slider.ButtonTextEN,
+                ButtonLink = slider.ButtonLink,
+                IsActive = slider.IsActive
+            };
         }
 
-        public async Task<Slider> UpdateSliderAsync(int id, SliderDto dto)
+        public async Task<SliderDto> UpdateSliderAsync(int id, SliderRequestDto dto)
         {
             var slider = await _context.Sliders.FindAsync(id);
             if (slider == null) return null;
 
-            slider.Title = dto.Title;
-            slider.Subtitle = dto.Subtitle;
-            slider.ImageUrl = dto.ImageUrl;
-            slider.Description = dto.Description;
-            slider.ButtonText = dto.ButtonText;
             slider.ButtonLink = dto.ButtonLink;
+            slider.IsActive = dto.IsActive;
+            slider.TitleEN = dto.TitleEN;
+            slider.TitleAR = dto.TitleAR;
+            slider.SubtitleEN = dto.SubtitleEN;
+            slider.SubtitleAR = dto.SubtitleAR;
+            slider.ImageUrl = dto.ImageUrl;
+            slider.DescriptionEN = dto.DescriptionEN;
+            slider.DescriptionAR = dto.DescriptionAR;
+            slider.ButtonTextEN = dto.ButtonTextEN;
+            slider.ButtonTextAR = dto.ButtonTextAR;
+            slider.ImageUrl = dto.ImageUrl;
             slider.IsActive = dto.IsActive;
 
             await _context.SaveChangesAsync();
-            return slider;
+            return new SliderDto
+            {
+                Id = slider.Id,
+                TitleAR = slider.TitleAR,
+                TitleEN = slider.TitleEN,
+                SubtitleAR = slider.SubtitleAR,
+                SubtitleEN = slider.SubtitleEN,
+                ImageUrl = slider.ImageUrl,
+                DescriptionEN = slider.DescriptionEN,
+                DescriptionAR = slider.DescriptionAR,
+                ButtonTextAR = slider.ButtonTextAR,
+                ButtonTextEN = slider.ButtonTextEN,
+                ButtonLink = slider.ButtonLink,
+                IsActive = slider.IsActive
+            };
         }
 
         public async Task DeleteSliderAsync(int id)

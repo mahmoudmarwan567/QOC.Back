@@ -2,7 +2,6 @@
 using QOC.Application.DTOs.Gallery;
 using QOC.Domain.Entities;
 using QOC.Infrastructure.Contracts;
-using QOC.Infrastructure.Helpers;
 using QOC.Infrastructure.Persistence;
 
 namespace QOC.Infrastructure.Services
@@ -21,7 +20,8 @@ namespace QOC.Infrastructure.Services
             return galleries.Select(galleries => new GalleryDto
             {
                 Id = galleries.Id,
-                Description = CultureHelper.IsArabic() ? galleries.DescriptionAR : galleries.DescriptionEN,
+                DescriptionAR = galleries.DescriptionAR,
+                DescriptionEN = galleries.DescriptionEN,
                 ImagePath = galleries.ImagePath
             });
         }
@@ -43,7 +43,8 @@ namespace QOC.Infrastructure.Services
             var result = galleryEntities.Select(g => new GalleryDto
             {
                 Id = g.Id,
-                Description = CultureHelper.IsArabic() ? g.DescriptionAR : g.DescriptionEN,
+                DescriptionAR = g.DescriptionAR,
+                DescriptionEN = g.DescriptionEN,
                 ImagePath = g.ImagePath
             }).ToList();
 

@@ -3,7 +3,8 @@
     public class Company
     {
         public int Id { get; set; }
-        public string Name { get; set; }
+        public string NameAR { get; set; }
+        public string NameEN { get; set; }
         public string Logo { get; set; }
         public ICollection<CompanyAddress> Addresses { get; set; }
             = new List<CompanyAddress>();

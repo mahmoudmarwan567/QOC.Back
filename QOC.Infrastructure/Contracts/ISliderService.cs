@@ -1,20 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-using QOC.Application.DTOs;
-using QOC.Domain.Entities;
+﻿using QOC.Application.DTOs;
+using QOC.Application.DTOs.Slider;
 
 namespace QOC.Application.Interfaces
 {
     public interface ISliderService
     {
-        Task<IEnumerable<Slider>> GetAllSlidersAsync();
-        Task<Slider> GetSliderByIdAsync(int id);
-        Task<Slider> CreateSliderAsync(SliderDto dto);
-        Task<Slider> UpdateSliderAsync(int id, SliderDto dto);
+        Task<IEnumerable<SliderDto>> GetAllSlidersAsync();
+        Task<SliderDto> GetSliderByIdAsync(int id);
+        Task<SliderDto> CreateSliderAsync(SliderRequestDto dto);
+        Task<SliderDto> UpdateSliderAsync(int id, SliderRequestDto dto);
         Task DeleteSliderAsync(int id);
     }
 }

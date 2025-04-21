@@ -24,13 +24,36 @@ namespace QOC.Infrastructure.Services
         public async Task<IEnumerable<ProjectResponseDto>> GetAllProjectsAsync()
         {
             var projects = await _context.Projects.Include(p => p.ProjectImages).ToListAsync();
-            return _mapper.Map<IEnumerable<ProjectResponseDto>>(projects);
+            var result = projects.Select(p => new ProjectResponseDto
+            {
+                Id = p.Id,
+                ProjectNameAR = p.ProjectNameAR,
+                ProjectNameEN = p.ProjectNameEN,
+                ProjectDescriptionAR = p.ProjectDescriptionAR,
+                ProjectDescriptionEN = p.ProjectDescriptionEN,
+                ProjectPropertiesAR = p.ProjectPropertiesAR,
+                ProjectPropertiesEN = p.ProjectPropertiesEN,
+                ProjectCategoryId = p.ProjectCategoryId,
+                ProjectImages = _mapper.Map<List<ProjectImageResponseDto>>(p.ProjectImages)
+            });
+            return result;
         }
 
         public async Task<ProjectResponseDto?> GetProjectByIdAsync(int id)
         {
             var project = await _context.Projects.Include(p => p.ProjectImages).FirstOrDefaultAsync(p => p.Id == id);
-            return project == null ? null : _mapper.Map<ProjectResponseDto>(project);
+            return new ProjectResponseDto
+            {
+                Id = project.Id,
+                ProjectNameAR = project.ProjectNameAR,
+                ProjectNameEN = project.ProjectNameEN,
+                ProjectDescriptionAR = project.ProjectDescriptionAR,
+                ProjectDescriptionEN = project.ProjectDescriptionEN,
+                ProjectPropertiesAR = project.ProjectPropertiesAR,
+                ProjectPropertiesEN = project.ProjectPropertiesEN,
+                ProjectCategoryId = project.ProjectCategoryId,
+                ProjectImages = _mapper.Map<List<ProjectImageResponseDto>>(project.ProjectImages)
+            };
         }
 
         public async Task<ProjectResponseDto> CreateProjectAsync(CreateProjectDto projectDto)
@@ -39,10 +62,13 @@ namespace QOC.Infrastructure.Services
 
             var project = new Project
             {
-                ProjectName = projectDto.ProjectName,
-                ProjectDescription = projectDto.ProjectDescription,
+                ProjectNameAR = projectDto.ProjectNameAR,
+                ProjectNameEN = projectDto.ProjectNameEN,
+                ProjectDescriptionAR = projectDto.ProjectDescriptionAR,
+                ProjectDescriptionEN = projectDto.ProjectDescriptionEN,
+                ProjectPropertiesAR = projectDto.ProjectPropertiesAR,
+                ProjectPropertiesEN = projectDto.ProjectPropertiesEN,
                 ProjectCategoryId = projectDto.ProjectCategoryId,
-                ProjectProperties = projectDto.ProjectProperties,
             };
             var projectImages = new List<ProjectImage>();
 
@@ -61,7 +87,18 @@ namespace QOC.Infrastructure.Services
             _context.Projects.Add(project);
             await _context.SaveChangesAsync();
 
-            return _mapper.Map<ProjectResponseDto>(project);
+            return new ProjectResponseDto
+            {
+                Id = project.Id,
+                ProjectNameAR = project.ProjectNameAR,
+                ProjectNameEN = project.ProjectNameEN,
+                ProjectDescriptionAR = project.ProjectDescriptionAR,
+                ProjectDescriptionEN = project.ProjectDescriptionEN,
+                ProjectPropertiesAR = project.ProjectPropertiesAR,
+                ProjectPropertiesEN = project.ProjectPropertiesEN,
+                ProjectCategoryId = project.ProjectCategoryId,
+                ProjectImages = _mapper.Map<List<ProjectImageResponseDto>>(project.ProjectImages)
+            };
         }
         public async Task<ProjectResponseDto?> UpdateProjectAsync(ProjectUpdateDto projectDto)
         {
@@ -70,10 +107,13 @@ namespace QOC.Infrastructure.Services
             var project = await _context.Projects.Include(p => p.ProjectImages).FirstOrDefaultAsync(p => p.Id == projectDto.Id);
             if (project == null) return null;
 
-            project.ProjectName = projectDto.ProjectName;
-            project.ProjectDescription = projectDto.ProjectDescription;
+            project.ProjectNameAR = projectDto.ProjectNameAR;
+            project.ProjectNameEN = projectDto.ProjectNameEN;
+            project.ProjectDescriptionAR = projectDto.ProjectDescriptionAR;
+            project.ProjectDescriptionEN = projectDto.ProjectDescriptionEN;
+            project.ProjectPropertiesAR = projectDto.ProjectPropertiesAR;
+            project.ProjectPropertiesEN = projectDto.ProjectPropertiesEN;
             project.ProjectCategoryId = projectDto.ProjectCategoryId;
-            project.ProjectProperties = projectDto.ProjectProperties;
 
             // Handle image updates
             var newImages = new List<ProjectImage>();
@@ -122,7 +162,18 @@ namespace QOC.Infrastructure.Services
             _context.Projects.Update(project);
             await _context.SaveChangesAsync();
 
-            return _mapper.Map<ProjectResponseDto>(project);
+            return new ProjectResponseDto
+            {
+                Id = project.Id,
+                ProjectNameAR = project.ProjectNameAR,
+                ProjectNameEN = project.ProjectNameEN,
+                ProjectDescriptionAR = project.ProjectDescriptionAR,
+                ProjectDescriptionEN = project.ProjectDescriptionEN,
+                ProjectPropertiesAR = project.ProjectPropertiesAR,
+                ProjectPropertiesEN = project.ProjectPropertiesEN,
+                ProjectCategoryId = project.ProjectCategoryId,
+                ProjectImages = _mapper.Map<List<ProjectImageResponseDto>>(project.ProjectImages)
+            };
         }
 
         public async Task<bool> DeleteProjectAsync(int id)

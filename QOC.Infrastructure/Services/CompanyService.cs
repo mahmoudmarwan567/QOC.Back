@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using QOC.Application.DTOs;    // المسار للـ DTOs
+using QOC.Application.DTOs;
 using QOC.Domain.Entities;
+using QOC.Infrastructure.Helpers;
 using QOC.Infrastructure.Persistence;
 
 namespace QOC.Infrastructure.Services
@@ -28,14 +29,14 @@ namespace QOC.Infrastructure.Services
             var companyDtos = companies.Select(company => new CompanyDto
             {
                 Id = company.Id,
-                Name = company.Name,
+                Name = CultureHelper.IsArabic() ? company.NameAR : company.NameEN,
                 LogoPath = company.Logo, // Mapping Logo field
-                Addresses = company.Addresses.Select(a => a.Address).ToList(),
+                Addresses = company.Addresses.Select(a => CultureHelper.IsArabic() ? a.AddressAR : a.AddressEN).ToList(),
                 Phones = company.Phones.Select(p => p.PhoneNumber).ToList(),
                 Emails = company.Emails.Select(e => e.Email).ToList(),
                 CompanySocials = company.CompanySocials.Select(cs => new CompanySocialDto
                 {
-                    Name = cs.SocialName,
+                    Name = CultureHelper.IsArabic() ? cs.SocialNameAR : cs.SocialNameEN,
                     IconPath = cs.SocialIconPath
                 }).ToList()
             }).ToList();
@@ -43,19 +44,24 @@ namespace QOC.Infrastructure.Services
             return companyDtos;
         }
 
-        // Create a new company and return as DTO with manual mapping
-        public async Task<CompanyDto> CreateCompanyAsync(CompanyDto dto)
+        public async Task<CompanyDto> CreateCompanyAsync(CompanyRequestDto dto)
         {
             var company = new Company
             {
-                Name = dto.Name,
-                Logo = dto.LogoPath, // Mapping LogoPath in DTO to Logo in Entity
-                Addresses = dto.Addresses.Select(a => new CompanyAddress { Address = a }).ToList(),
+                NameAR = dto.NameAR,
+                NameEN = dto.NameEN,
+                Logo = dto.LogoPath,
+                Addresses = dto.AddressesEN.Select((addrEN, index) => new CompanyAddress
+                {
+                    AddressEN = addrEN,
+                    AddressAR = dto.AddressesAR.ElementAtOrDefault(index) // Match by index
+                }).ToList(),
                 Phones = dto.Phones.Select(p => new CompanyPhone { PhoneNumber = p }).ToList(),
                 Emails = dto.Emails.Select(e => new CompanyEmail { Email = e }).ToList(),
                 CompanySocials = dto.CompanySocials.Select(cs => new CompanySocial
                 {
-                    SocialName = cs.Name,
+                    SocialNameAR = cs.NameAR,
+                    SocialNameEN = cs.NameEN,
                     SocialIconPath = cs.IconPath
                 }).ToList()
             };
@@ -63,18 +69,20 @@ namespace QOC.Infrastructure.Services
             _context.Companies.Add(company);
             await _context.SaveChangesAsync();
 
-            // Return created entity as DTO
+
             return new CompanyDto
             {
                 Id = company.Id,
-                Name = company.Name,
+                Name = CultureHelper.IsArabic() ? company.NameAR : company.NameEN,
                 LogoPath = company.Logo,
-                Addresses = company.Addresses.Select(a => a.Address).ToList(),
+                Addresses = company.Addresses
+                    .Select(a => CultureHelper.IsArabic() ? a.AddressAR : a.AddressEN)
+                    .ToList(),
                 Phones = company.Phones.Select(p => p.PhoneNumber).ToList(),
                 Emails = company.Emails.Select(e => e.Email).ToList(),
                 CompanySocials = company.CompanySocials.Select(cs => new CompanySocialDto
                 {
-                    Name = cs.SocialName,
+                    Name = CultureHelper.IsArabic() ? cs.SocialNameAR : cs.SocialNameEN,
                     IconPath = cs.SocialIconPath
                 }).ToList()
             };
@@ -95,21 +103,21 @@ namespace QOC.Infrastructure.Services
             return new CompanyDto
             {
                 Id = company.Id,
-                Name = company.Name,
+                Name = CultureHelper.IsArabic() ? company.NameAR : company.NameEN,
                 LogoPath = company.Logo,
-                Addresses = company.Addresses.Select(a => a.Address).ToList(),
+                Addresses = company.Addresses.Select(a => CultureHelper.IsArabic() ? a.AddressAR : a.AddressEN).ToList(),
                 Phones = company.Phones.Select(p => p.PhoneNumber).ToList(),
                 Emails = company.Emails.Select(e => e.Email).ToList(),
                 CompanySocials = company.CompanySocials.Select(cs => new CompanySocialDto
                 {
-                    Name = cs.SocialName,
+                    Name = CultureHelper.IsArabic() ? cs.SocialNameAR : cs.SocialNameEN,
                     IconPath = cs.SocialIconPath
                 }).ToList()
             };
         }
 
         // Update an existing company with manual mapping
-        public async Task<CompanyDto> UpdateCompanyAsync(int id, CompanyDto dto)
+        public async Task<CompanyDto> UpdateCompanyAsync(int id, CompanyRequestDto dto)
         {
             var company = await _context.Companies
                 .Include(c => c.Addresses)
@@ -127,15 +135,21 @@ namespace QOC.Infrastructure.Services
             company.CompanySocials.Clear();
 
             // Manually update fields
-            company.Name = dto.Name;
+            company.NameAR = dto.NameAR;
+            company.NameEN = dto.NameEN;
             company.Logo = dto.LogoPath;
 
-            company.Addresses = dto.Addresses.Select(a => new CompanyAddress { Address = a }).ToList();
+            company.Addresses = dto.AddressesEN.Select((addrEN, index) => new CompanyAddress
+            {
+                AddressEN = addrEN,
+                AddressAR = dto.AddressesAR.ElementAtOrDefault(index) // Match by index
+            }).ToList();
             company.Phones = dto.Phones.Select(p => new CompanyPhone { PhoneNumber = p }).ToList();
             company.Emails = dto.Emails.Select(e => new CompanyEmail { Email = e }).ToList();
             company.CompanySocials = dto.CompanySocials.Select(cs => new CompanySocial
             {
-                SocialName = cs.Name,
+                SocialNameAR = cs.NameAR,
+                SocialNameEN = cs.NameEN,
                 SocialIconPath = cs.IconPath
             }).ToList();
 
@@ -145,14 +159,14 @@ namespace QOC.Infrastructure.Services
             return new CompanyDto
             {
                 Id = company.Id,
-                Name = company.Name,
+                Name = CultureHelper.IsArabic() ? company.NameAR : company.NameEN,
                 LogoPath = company.Logo,
-                Addresses = company.Addresses.Select(a => a.Address).ToList(),
+                Addresses = company.Addresses.Select(a => CultureHelper.IsArabic() ? a.AddressAR : a.AddressEN).ToList(),
                 Phones = company.Phones.Select(p => p.PhoneNumber).ToList(),
                 Emails = company.Emails.Select(e => e.Email).ToList(),
                 CompanySocials = company.CompanySocials.Select(cs => new CompanySocialDto
                 {
-                    Name = cs.SocialName,
+                    Name = CultureHelper.IsArabic() ? cs.SocialNameAR : cs.SocialNameEN,
                     IconPath = cs.SocialIconPath
                 }).ToList()
             };

@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using QOC.Application.DTOs;
+using QOC.Application.DTOs.AboutUs;
 using QOC.Application.Interfaces;
 using QOC.Domain.Entities;
 using QOC.Infrastructure.Persistence;
@@ -21,41 +16,80 @@ namespace QOC.Infrastructure.Services
             _context = context;
         }
 
-        public async Task<IEnumerable<AboutUs>> GetAllAsync()
+        public async Task<IEnumerable<AboutUsDto>> GetAllAsync()
         {
-            return await _context.AboutUs.ToListAsync();
+            var aboutUs = await _context.AboutUs.ToListAsync();
+            return aboutUs.Select(a => new AboutUsDto
+            {
+                Id = a.Id,
+                DescriptionAR = a.DescriptionAR,
+                DescriptionEN = a.DescriptionEN,
+                FullDescriptionAR = a.FullDescriptionAR,
+                FullDescriptionEN = a.FullDescriptionEN,
+                ImageUrl = a.ImageUrl
+            }).ToList();
         }
 
-        public async Task<AboutUs> GetByIdAsync(int id)
+        public async Task<AboutUsDto> GetByIdAsync(int id)
         {
-            return await _context.AboutUs.FindAsync(id);
+            var aboutUs = await _context.AboutUs.FindAsync(id);
+            if (aboutUs == null) return null;
+            return new AboutUsDto
+            {
+                Id = aboutUs.Id,
+                DescriptionAR = aboutUs.DescriptionAR,
+                DescriptionEN = aboutUs.DescriptionEN,
+                FullDescriptionAR = aboutUs.FullDescriptionAR,
+                FullDescriptionEN = aboutUs.FullDescriptionEN,
+                ImageUrl = aboutUs.ImageUrl
+            };
         }
 
-        public async Task<AboutUs> CreateAsync(AboutUsDto dto)
+        public async Task<AboutUsDto> CreateAsync(AboutUsRequestDto dto)
         {
             var aboutUs = new AboutUs
             {
-                Description = dto.Description,
-                FullDescription = dto.FullDescription,
+                DescriptionAR = dto.DescriptionAR,
+                DescriptionEN = dto.DescriptionEN,
+                FullDescriptionAR = dto.FullDescriptionAR,
+                FullDescriptionEN = dto.FullDescriptionEN,
                 ImageUrl = dto.ImageUrl
             };
 
             _context.AboutUs.Add(aboutUs);
             await _context.SaveChangesAsync();
-            return aboutUs;
+            return new AboutUsDto
+            {
+                Id = aboutUs.Id,
+                DescriptionAR = aboutUs.DescriptionAR,
+                DescriptionEN = aboutUs.DescriptionEN,
+                FullDescriptionAR = aboutUs.FullDescriptionAR,
+                FullDescriptionEN = aboutUs.FullDescriptionEN,
+                ImageUrl = aboutUs.ImageUrl
+            };
         }
 
-        public async Task<AboutUs> UpdateAsync(int id, AboutUsDto dto)
+        public async Task<AboutUsDto> UpdateAsync(int id, AboutUsRequestDto dto)
         {
             var aboutUs = await _context.AboutUs.FindAsync(id);
             if (aboutUs == null) return null;
 
-            aboutUs.Description = dto.Description;
-            aboutUs.FullDescription = dto.FullDescription;
+            aboutUs.DescriptionAR = dto.DescriptionAR;
+            aboutUs.DescriptionEN = dto.DescriptionEN;
+            aboutUs.FullDescriptionAR = dto.FullDescriptionAR;
+            aboutUs.FullDescriptionEN = dto.FullDescriptionEN;
             aboutUs.ImageUrl = dto.ImageUrl;
 
             await _context.SaveChangesAsync();
-            return aboutUs;
+            return new AboutUsDto
+            {
+                Id = aboutUs.Id,
+                DescriptionAR = aboutUs.DescriptionAR,
+                DescriptionEN = aboutUs.DescriptionEN,
+                FullDescriptionAR = aboutUs.FullDescriptionAR,
+                FullDescriptionEN = aboutUs.FullDescriptionEN,
+                ImageUrl = aboutUs.ImageUrl
+            };
         }
 
         public async Task DeleteAsync(int id)

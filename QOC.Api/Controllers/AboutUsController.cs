@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using QOC.Application.DTOs;
+using QOC.Application.DTOs.AboutUs;
 using QOC.Application.Interfaces;
 
 namespace QOC.Api.Controllers
@@ -31,14 +31,14 @@ namespace QOC.Api.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create([FromBody] AboutUsDto dto)
+        public async Task<IActionResult> Create([FromBody] AboutUsRequestDto dto)
         {
             var created = await _aboutUsService.CreateAsync(dto);
             return CreatedAtAction(nameof(GetById), new { id = created.Id }, created);
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> Update(int id, [FromBody] AboutUsDto dto)
+        public async Task<IActionResult> Update(int id, [FromBody] AboutUsRequestDto dto)
         {
             var updated = await _aboutUsService.UpdateAsync(id, dto);
             if (updated == null) return NotFound();
@@ -70,7 +70,7 @@ namespace QOC.Api.Controllers
                 await file.CopyToAsync(stream);
             }
 
-            var imageUrl = $"/images/AboutUs/{uniqueFileName}"; // To be served as static file
+            var imageUrl = $"/images/AboutUs/{uniqueFileName}";
             return Ok(new { imageUrl });
         }
 

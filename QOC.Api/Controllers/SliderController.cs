@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using QOC.Application.DTOs;
+using QOC.Application.DTOs.Slider;
 using QOC.Application.Interfaces;
 
 namespace QOC.Api.Controllers
@@ -31,14 +31,14 @@ namespace QOC.Api.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateSlider([FromBody] SliderDto dto)
+        public async Task<IActionResult> CreateSlider([FromBody] SliderRequestDto dto)
         {
             var created = await _sliderService.CreateSliderAsync(dto);
             return CreatedAtAction(nameof(GetSlider), new { id = created.Id }, created);
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateSlider(int id, [FromBody] SliderDto dto)
+        public async Task<IActionResult> UpdateSlider(int id, [FromBody] SliderRequestDto dto)
         {
             var updated = await _sliderService.UpdateSliderAsync(id, dto);
             if (updated == null) return NotFound();
