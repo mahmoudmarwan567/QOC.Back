@@ -1,8 +1,7 @@
-﻿namespace QOC.Domain.Entities
+﻿namespace QOC.Application.DTOs
 {
-    public class Service
+    public class ServiceRequestDto
     {
-        public int Id { get; set; }
         public string TitleAR { get; set; } = string.Empty;
         public string TitleEN { get; set; } = string.Empty;
         public string DescriptionAR { get; set; } = string.Empty;
@@ -11,4 +10,3 @@
         public string ImageUrl { get; set; } = string.Empty;
     }
 }
-

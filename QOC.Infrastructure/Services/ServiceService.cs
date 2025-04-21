@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using QOC.Application.DTOs;
 using QOC.Application.Interfaces;
 using QOC.Domain.Entities;
@@ -21,43 +15,86 @@ namespace QOC.Infrastructure.Services
             _context = context;
         }
 
-        public async Task<IEnumerable<Service>> GetAllAsync()
+        public async Task<IEnumerable<ServiceDto>> GetAllAsync()
         {
-            return await _context.Services.OrderBy(s => s.Order).ToListAsync();
+            var services = await _context.Services.OrderBy(s => s.Order).ToListAsync();
+            var serviceDto = services.Select(service => new ServiceDto
+            {
+                Id = service.Id,
+                TitleAR = service.TitleAR,
+                TitleEN = service.TitleEN,
+                DescriptionAR = service.DescriptionAR,
+                DescriptionEN = service.DescriptionEN,
+                Order = service.Order,
+                ImageUrl = service.ImageUrl
+            }).ToList();
+            return serviceDto;
         }
 
-        public async Task<Service> GetByIdAsync(int id)
+        public async Task<ServiceDto> GetByIdAsync(int id)
         {
-            return await _context.Services.FindAsync(id);
+            var service = await _context.Services.FindAsync(id);
+            return new ServiceDto
+            {
+                Id = service.Id,
+                TitleAR = service.TitleAR,
+                TitleEN = service.TitleEN,
+                DescriptionAR = service.DescriptionAR,
+                DescriptionEN = service.DescriptionEN,
+                Order = service.Order,
+                ImageUrl = service.ImageUrl
+            };
         }
 
-        public async Task<Service> CreateAsync(ServiceDto dto)
+        public async Task<ServiceDto> CreateAsync(ServiceRequestDto dto)
         {
             var service = new Service
             {
-                Title = dto.Title,
-                Description = dto.Description,
+                TitleAR = dto.TitleAR,
+                TitleEN = dto.TitleEN,
+                DescriptionAR = dto.DescriptionAR,
+                DescriptionEN = dto.DescriptionEN,
                 Order = dto.Order,
                 ImageUrl = dto.ImageUrl
             };
 
             _context.Services.Add(service);
             await _context.SaveChangesAsync();
-            return service;
+            return new ServiceDto
+            {
+                Id = service.Id,
+                TitleAR = service.TitleAR,
+                TitleEN = service.TitleEN,
+                DescriptionAR = service.DescriptionAR,
+                DescriptionEN = service.DescriptionEN,
+                Order = service.Order,
+                ImageUrl = service.ImageUrl
+            };
         }
 
-        public async Task<Service> UpdateAsync(int id, ServiceDto dto)
+        public async Task<ServiceDto> UpdateAsync(int id, ServiceRequestDto dto)
         {
             var service = await _context.Services.FindAsync(id);
             if (service == null) return null;
 
-            service.Title = dto.Title;
-            service.Description = dto.Description;
+            service.TitleAR = dto.TitleAR;
+            service.TitleEN = dto.TitleEN;
+            service.DescriptionAR = dto.DescriptionAR;
+            service.DescriptionEN = dto.DescriptionEN;
             service.Order = dto.Order;
             service.ImageUrl = dto.ImageUrl;
 
             await _context.SaveChangesAsync();
-            return service;
+            return new ServiceDto
+            {
+                Id = service.Id,
+                TitleAR = service.TitleAR,
+                TitleEN = service.TitleEN,
+                DescriptionAR = service.DescriptionAR,
+                DescriptionEN = service.DescriptionEN,
+                Order = service.Order,
+                ImageUrl = service.ImageUrl
+            };
         }
 
         public async Task DeleteAsync(int id)

@@ -31,14 +31,14 @@ namespace QOC.Api.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create([FromBody] ServiceDto dto)
+        public async Task<IActionResult> Create([FromBody] ServiceRequestDto dto)
         {
             var created = await _serviceService.CreateAsync(dto);
             return CreatedAtAction(nameof(GetById), new { id = created.Id }, created);
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> Update(int id, [FromBody] ServiceDto dto)
+        public async Task<IActionResult> Update(int id, [FromBody] ServiceRequestDto dto)
         {
             var updated = await _serviceService.UpdateAsync(id, dto);
             if (updated == null) return NotFound();
