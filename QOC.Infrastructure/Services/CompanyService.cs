@@ -29,9 +29,11 @@ namespace QOC.Infrastructure.Services
             var companyDtos = companies.Select(company => new CompanyDto
             {
                 Id = company.Id,
-                Name = CultureHelper.IsArabic() ? company.NameAR : company.NameEN,
-                LogoPath = company.Logo, // Mapping Logo field
-                Addresses = company.Addresses.Select(a => CultureHelper.IsArabic() ? a.AddressAR : a.AddressEN).ToList(),
+                NameAR = company.NameAR,
+                NameEN = company.NameEN,
+                LogoPath = company.Logo,
+                AddressesAR = company.Addresses.Select(a => a.AddressAR).ToList(),
+                AddressesEN = company.Addresses.Select(a => a.AddressEN).ToList(),
                 Phones = company.Phones.Select(p => p.PhoneNumber).ToList(),
                 Emails = company.Emails.Select(e => e.Email).ToList(),
                 CompanySocials = company.CompanySocials.Select(cs => new CompanySocialDto
@@ -73,11 +75,11 @@ namespace QOC.Infrastructure.Services
             return new CompanyDto
             {
                 Id = company.Id,
-                Name = CultureHelper.IsArabic() ? company.NameAR : company.NameEN,
+                NameAR = company.NameAR,
+                NameEN = company.NameEN,
                 LogoPath = company.Logo,
-                Addresses = company.Addresses
-                    .Select(a => CultureHelper.IsArabic() ? a.AddressAR : a.AddressEN)
-                    .ToList(),
+                AddressesAR = company.Addresses.Select(a => a.AddressAR).ToList(),
+                AddressesEN = company.Addresses.Select(a => a.AddressEN).ToList(),
                 Phones = company.Phones.Select(p => p.PhoneNumber).ToList(),
                 Emails = company.Emails.Select(e => e.Email).ToList(),
                 CompanySocials = company.CompanySocials.Select(cs => new CompanySocialDto
@@ -103,9 +105,11 @@ namespace QOC.Infrastructure.Services
             return new CompanyDto
             {
                 Id = company.Id,
-                Name = CultureHelper.IsArabic() ? company.NameAR : company.NameEN,
+                NameAR = company.NameAR,
+                NameEN = company.NameEN,
                 LogoPath = company.Logo,
-                Addresses = company.Addresses.Select(a => CultureHelper.IsArabic() ? a.AddressAR : a.AddressEN).ToList(),
+                AddressesAR = company.Addresses.Select(a => a.AddressAR).ToList(),
+                AddressesEN = company.Addresses.Select(a => a.AddressEN).ToList(),
                 Phones = company.Phones.Select(p => p.PhoneNumber).ToList(),
                 Emails = company.Emails.Select(e => e.Email).ToList(),
                 CompanySocials = company.CompanySocials.Select(cs => new CompanySocialDto
@@ -159,9 +163,11 @@ namespace QOC.Infrastructure.Services
             return new CompanyDto
             {
                 Id = company.Id,
-                Name = CultureHelper.IsArabic() ? company.NameAR : company.NameEN,
+                NameAR = company.NameAR,
+                NameEN = company.NameEN,
                 LogoPath = company.Logo,
-                Addresses = company.Addresses.Select(a => CultureHelper.IsArabic() ? a.AddressAR : a.AddressEN).ToList(),
+                AddressesAR = company.Addresses.Select(a => a.AddressAR).ToList(),
+                AddressesEN = company.Addresses.Select(a => a.AddressEN).ToList(),
                 Phones = company.Phones.Select(p => p.PhoneNumber).ToList(),
                 Emails = company.Emails.Select(e => e.Email).ToList(),
                 CompanySocials = company.CompanySocials.Select(cs => new CompanySocialDto
