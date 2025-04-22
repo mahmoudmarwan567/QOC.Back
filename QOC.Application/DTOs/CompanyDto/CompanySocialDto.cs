@@ -2,7 +2,8 @@
 {
     public class CompanySocialDto
     {
-        public string Name { get; set; }
+        public string NameAR { get; set; }
+        public string NameEN { get; set; }
         public string IconPath { get; set; }
     }
 }

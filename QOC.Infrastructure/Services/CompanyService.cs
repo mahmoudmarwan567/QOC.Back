@@ -1,7 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using QOC.Application.DTOs;
 using QOC.Domain.Entities;
-using QOC.Infrastructure.Helpers;
 using QOC.Infrastructure.Persistence;
 
 namespace QOC.Infrastructure.Services
@@ -38,7 +37,8 @@ namespace QOC.Infrastructure.Services
                 Emails = company.Emails.Select(e => e.Email).ToList(),
                 CompanySocials = company.CompanySocials.Select(cs => new CompanySocialDto
                 {
-                    Name = CultureHelper.IsArabic() ? cs.SocialNameAR : cs.SocialNameEN,
+                    NameAR = cs.SocialNameAR,
+                    NameEN = cs.SocialNameEN,
                     IconPath = cs.SocialIconPath
                 }).ToList()
             }).ToList();
@@ -84,7 +84,8 @@ namespace QOC.Infrastructure.Services
                 Emails = company.Emails.Select(e => e.Email).ToList(),
                 CompanySocials = company.CompanySocials.Select(cs => new CompanySocialDto
                 {
-                    Name = CultureHelper.IsArabic() ? cs.SocialNameAR : cs.SocialNameEN,
+                    NameAR = cs.SocialNameAR,
+                    NameEN = cs.SocialNameEN,
                     IconPath = cs.SocialIconPath
                 }).ToList()
             };
@@ -114,7 +115,8 @@ namespace QOC.Infrastructure.Services
                 Emails = company.Emails.Select(e => e.Email).ToList(),
                 CompanySocials = company.CompanySocials.Select(cs => new CompanySocialDto
                 {
-                    Name = CultureHelper.IsArabic() ? cs.SocialNameAR : cs.SocialNameEN,
+                    NameAR = cs.SocialNameAR,
+                    NameEN = cs.SocialNameEN,
                     IconPath = cs.SocialIconPath
                 }).ToList()
             };
@@ -172,7 +174,8 @@ namespace QOC.Infrastructure.Services
                 Emails = company.Emails.Select(e => e.Email).ToList(),
                 CompanySocials = company.CompanySocials.Select(cs => new CompanySocialDto
                 {
-                    Name = CultureHelper.IsArabic() ? cs.SocialNameAR : cs.SocialNameEN,
+                    NameAR = cs.SocialNameAR,
+                    NameEN = cs.SocialNameEN,
                     IconPath = cs.SocialIconPath
                 }).ToList()
             };
