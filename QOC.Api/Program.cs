@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.FileProviders;
+using QOC.Api.Helpers;
 using QOC.Application.Interfaces;
 using QOC.Domain.Entities;
 using QOC.Infrastructure.Contracts;
@@ -71,7 +72,6 @@ if (app.Environment.IsDevelopment() || true)
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-app.UseStaticFiles();
 app.UseDeveloperExceptionPage();
 app.UseHttpsRedirection();
 app.UseRequestLocalization();
@@ -79,6 +79,7 @@ app.UseCors("AllowAngularClient");
 app.UseRequestLocalization();
 app.UseAuthentication();
 app.UseAuthorization();
+app.UseMiddleware<EnforceAuthorizationMiddleware>();
 app.MapControllers();
 
 app.Run();
