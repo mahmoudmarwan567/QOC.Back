@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.FileProviders;
+using QOC.Api.Helpers;
 using QOC.Application.Interfaces;
 using QOC.Domain.Entities;
 using QOC.Infrastructure.Contracts;
@@ -67,25 +68,10 @@ app.UseStaticFiles(new StaticFileOptions
 {
     FileProvider = new PhysicalFileProvider(
         Path.Combine(Directory.GetCurrentDirectory(), "wwwroot")),
-    RequestPath = "",
-    OnPrepareResponse = ctx =>
-    {
-        var path = ctx.File.Name;
-
-        // index.html or similar should not be cached
-        if (path.Equals("index.html", StringComparison.OrdinalIgnoreCase))
-        {
-            ctx.Context.Response.Headers.Append("Cache-Control", "no-cache, no-store, must-revalidate");
-        }
-        else
-        {
-            const int durationInSeconds = 60 * 60 * 24 * 365; 
-            ctx.Context.Response.Headers.Append("Cache-Control", $"public,max-age={durationInSeconds},immutable");
-        }
-    }
+    RequestPath = ""
 });
 
-
+// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -98,6 +84,7 @@ app.UseCors("AllowAngularClient");
 app.UseRequestLocalization();
 app.UseAuthentication();
 app.UseAuthorization();
+app.UseMiddleware<EnforceAuthorizationMiddleware>();
 app.MapControllers();
 
 app.Run();
