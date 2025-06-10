@@ -8,12 +8,15 @@ using QOC.Infrastructure.Persistence;
 using QOC.Infrastructure.Services;
 
 var builder = WebApplication.CreateBuilder(args);
+var corsSettings = builder.Configuration.GetSection("Cors");
+var policyName = corsSettings["PolicyName"];
+var origins = corsSettings.GetSection("Origins").Get<string[]>();
 
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllowAngularClient", policy =>
+    options.AddPolicy(policyName, policy =>
     {
-        policy.WithOrigins("http://localhost:4200")
+        policy.WithOrigins(origins)
               .AllowAnyMethod()
               .AllowAnyHeader()
               .AllowCredentials();
@@ -28,6 +31,8 @@ builder.Services.Configure<RequestLocalizationOptions>(options =>
            .AddSupportedCultures(supportedCultures)
            .AddSupportedUICultures(supportedCultures);
 });
+builder.Services.AddMemoryCache();
+
 // Add Identity & JWT
 builder.Services.AddIdentityInfrastructure(builder.Configuration);
 
@@ -62,16 +67,30 @@ app.UseStaticFiles(new StaticFileOptions
 {
     FileProvider = new PhysicalFileProvider(
         Path.Combine(Directory.GetCurrentDirectory(), "wwwroot")),
-    RequestPath = ""
+    RequestPath = "",
+    OnPrepareResponse = ctx =>
+    {
+        var path = ctx.File.Name;
+
+        // index.html or similar should not be cached
+        if (path.Equals("index.html", StringComparison.OrdinalIgnoreCase))
+        {
+            ctx.Context.Response.Headers.Append("Cache-Control", "no-cache, no-store, must-revalidate");
+        }
+        else
+        {
+            const int durationInSeconds = 60 * 60 * 24 * 365; 
+            ctx.Context.Response.Headers.Append("Cache-Control", $"public,max-age={durationInSeconds},immutable");
+        }
+    }
 });
 
-// Configure the HTTP request pipeline.
+
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-app.UseStaticFiles();
 app.UseDeveloperExceptionPage();
 app.UseHttpsRedirection();
 app.UseRequestLocalization();
@@ -82,3 +101,4 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.Run();
+  

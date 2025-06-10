@@ -10,5 +10,7 @@ namespace QOC.Infrastructure.Contracts
         Task<ProjectResponseDto> UpdateProjectAsync(ProjectUpdateDto projectDto);
         Task<bool> DeleteProjectAsync(int id);
         Task<IEnumerable<ProjectResponseDto>> GetProjectsByCategoryAsync(int categoryId);
+        Task<IEnumerable<ProjectResponseDto>> GetProjectsByCategoryPagedAsync(int categoryId, int page, int pageSize);
+
     }
 }

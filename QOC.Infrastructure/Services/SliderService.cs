@@ -10,6 +10,10 @@ namespace QOC.Infrastructure.Services
     public class SliderService : ISliderService
     {
         private readonly ApplicationDbContext _context;
+        private static IEnumerable<SliderDto>? _cachedSliders;
+        private static DateTime _lastCacheTime;
+        private static readonly TimeSpan CacheDuration = TimeSpan.FromMinutes(10);
+        private static readonly object _cacheLock = new();
 
         public SliderService(ApplicationDbContext context)
         {
@@ -18,8 +22,16 @@ namespace QOC.Infrastructure.Services
 
         public async Task<IEnumerable<SliderDto>> GetAllSlidersAsync()
         {
-            var sliders = await _context.Sliders.ToListAsync();
-            return sliders.Select(s => new SliderDto
+            lock (_cacheLock)
+            {
+                if (_cachedSliders != null && DateTime.Now - _lastCacheTime < CacheDuration)
+                {
+                    return _cachedSliders;
+                }
+            }
+
+            var sliders = await _context.Sliders.AsNoTracking().ToListAsync();
+            var result = sliders.Select(s => new SliderDto
             {
                 Id = s.Id,
                 TitleAR = s.TitleAR,
@@ -34,12 +46,21 @@ namespace QOC.Infrastructure.Services
                 ButtonLink = s.ButtonLink,
                 IsActive = s.IsActive
             }).ToList();
+
+            lock (_cacheLock)
+            {
+                _cachedSliders = result;
+                _lastCacheTime = DateTime.Now;
+            }
+
+            return result;
         }
 
         public async Task<SliderDto> GetSliderByIdAsync(int id)
         {
             var slider = await _context.Sliders.FindAsync(id);
             if (slider == null) return null;
+
             return new SliderDto
             {
                 Id = slider.Id,
@@ -76,6 +97,8 @@ namespace QOC.Infrastructure.Services
 
             _context.Sliders.Add(slider);
             await _context.SaveChangesAsync();
+            InvalidateCache();
+
             return new SliderDto
             {
                 Id = slider.Id,
@@ -109,10 +132,10 @@ namespace QOC.Infrastructure.Services
             slider.DescriptionAR = dto.DescriptionAR;
             slider.ButtonTextEN = dto.ButtonTextEN;
             slider.ButtonTextAR = dto.ButtonTextAR;
-            slider.ImageUrl = dto.ImageUrl;
-            slider.IsActive = dto.IsActive;
 
             await _context.SaveChangesAsync();
+            InvalidateCache();
+
             return new SliderDto
             {
                 Id = slider.Id,
@@ -137,7 +160,16 @@ namespace QOC.Infrastructure.Services
 
             _context.Sliders.Remove(slider);
             await _context.SaveChangesAsync();
+            InvalidateCache();
+        }
+
+        private void InvalidateCache()
+        {
+            lock (_cacheLock)
+            {
+                _cachedSliders = null;
+                _lastCacheTime = DateTime.MinValue;
+            }
         }
     }
 }
-

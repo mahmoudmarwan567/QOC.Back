@@ -91,12 +91,20 @@ namespace QOC.Api.Controllers
 
             return Ok(new { imageUrls = uploadedUrls });
         }
-
         [HttpGet("byCategory/{categoryId}")]
-        public async Task<ActionResult<IEnumerable<ProjectResponseDto>>> GetProjectsByCategory(int categoryId)
+        public async Task<ActionResult<IEnumerable<ProjectResponseDto>>> GetProjectsByCategoryPaged(
+          int categoryId,
+          int page = 1,
+          int pageSize = 9)
         {
-            var projects = await _projectService.GetProjectsByCategoryAsync(categoryId);
+            if (page < 1 || pageSize < 1)
+                return BadRequest("Invalid pagination parameters.");
+
+            // استدعاء الدالة الجديدة اللي تدعم Pagination في الـ service
+            var projects = await _projectService.GetProjectsByCategoryPagedAsync(categoryId, page, pageSize);
+
             return Ok(projects);
         }
+
     }
 }

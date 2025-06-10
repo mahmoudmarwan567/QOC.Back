@@ -1,0 +1,67 @@
+{
+  "navbar": {
+    "home": "a\u0634\u0634aaa\u0634\u0634\u0634\u0634\u0634\u064A\u0634\u064A\u064A\u0634\u0633\u064A\u0634\u0633\u064A\u0634\u0633\u064A\u0634\u0633\u064A",
+    "projects": "Projects",
+    "ceo_message": "Chairman\u2019s Message",
+    "contact": "Contact Us"
+  },
+  "menu": {
+    "home": "Home",
+    "projects": "PROJECTS",
+    "ceo_message": "Chairman\u2019s speech",
+    "blog": "Blog",
+    "about": "ABOUT US",
+    "contact": "Contact us"
+  },
+  "footer": {
+    "contact_info": "Contact info",
+    "pages": "Pages",
+    "residential_towers": "Residential Towers",
+    "hotel_towers": "Hotel Towers",
+    "admin_towers": "Administrative Towers",
+    "residential_buildings": "Residential Buildings",
+    "mosques": "Mosques",
+    "others": "Others",
+    "about": "About Us",
+    "team": "Our Team"
+  },
+  "about_us": {
+    "title": "About Us",
+    "discover_more": "Discover More"
+  },
+  "portfolio": {
+    "title": "PROJECTS",
+    "no_projects": "There are no projects in this category"
+  },
+  "services": {
+    "title": "Our Services"
+  },
+  "contact": {
+    "title": "Contact Us",
+    "description": "If you have any inquiries, please contact us and we will respond to you as soon as possible.",
+    "name_placeholder": "Full Name",
+    "email_placeholder": "Email Address",
+    "message_placeholder": "Your Message",
+    "submit": "Submit"
+  },
+  "project": {
+    "category": "Category",
+    "description": "Description",
+    "properties": "Properties",
+    "backToList": "Back to list",
+    "loading": "Loading data..."
+  },
+  "CHAIRMAN_SPEECH": {
+    "TITLE_PART1": "Chairman\u0027s",
+    "TITLE_PART2": "Message",
+    "QUOTE": "At Qubbah Engineering Consultants, we take pride in being part of the transformative journey aligned with the vision of our beloved Kingdom. We strive to offer innovative and sustainable solutions through our integrated engineering consultancy services, aiming to contribute to building a prosperous and sustainable society. Our vision is embodied in supporting the Kingdom\u0027s aspirations by focusing on human development and delivering added value to our clients, committed to the highest standards of quality.",
+    "NAME": "Eng. Abdulaziz Al-Ajlan",
+    "TITLE": "Chairman"
+  },
+  "Project_Category": {
+    "back": "Back",
+    "no_projects": "No projects in this category."
+  },
+  "arabic": "",
+  "english": ""
+}
