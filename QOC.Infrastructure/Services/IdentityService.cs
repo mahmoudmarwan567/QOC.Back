@@ -14,16 +14,20 @@ namespace QOC.Infrastructure.Services
     {
         public static void AddIdentityInfrastructure(this IServiceCollection services, IConfiguration configuration)
         {
-            // Database
+            // Database  
             services.AddDbContext<ApplicationDbContext>(options =>
-                options.UseSqlServer(configuration.GetConnectionString("DefaultConnection")));
+                options.UseMySql(
+                    configuration.GetConnectionString("DefaultConnection"),
+                    ServerVersion.AutoDetect(configuration.GetConnectionString("DefaultConnection")) // Updated to use Pomelo's ServerVersion.AutoDetect  
+                )
+            );
 
-            // Identity
+            // Identity  
             services.AddIdentity<ApplicationUser, IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders();
 
-            // JWT Authentication
+            // JWT Authentication  
             var key = Encoding.UTF8.GetBytes(configuration["Jwt:Secret"]);
             services.AddAuthentication(options =>
             {
