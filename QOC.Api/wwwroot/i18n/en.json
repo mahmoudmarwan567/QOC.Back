@@ -1,17 +1,11 @@
 {
-  "navbar": {
-    "home": "a\u0634\u0634aaa\u0634\u0634\u0634\u0634\u0634\u064A\u0634\u064A\u064A\u0634\u0633\u064A\u0634\u0633\u064A\u0634\u0633\u064A\u0634\u0633\u064A",
-    "projects": "Projects",
-    "ceo_message": "Chairman\u2019s Message",
-    "contact": "Contact Us"
-  },
   "menu": {
-    "home": "Home",
+    "home": "HOME",
     "projects": "PROJECTS",
-    "ceo_message": "Chairman\u2019s speech",
+    "ceo_message": "CHAIRMAN\u2019S SPEECH",
     "blog": "Blog",
-    "about": "ABOUT US",
-    "contact": "Contact us"
+    "about": "About Us",
+    "contact": "CONTACT US\n\n"
   },
   "footer": {
     "contact_info": "Contact info",
@@ -30,7 +24,7 @@
     "discover_more": "Discover More"
   },
   "portfolio": {
-    "title": "PROJECTS",
+    "title": "Projects",
     "no_projects": "There are no projects in this category"
   },
   "services": {
@@ -46,7 +40,7 @@
   },
   "project": {
     "category": "Category",
-    "description": "Description",
+    "description": "location",
     "properties": "Properties",
     "backToList": "Back to list",
     "loading": "Loading data..."
@@ -54,14 +48,14 @@
   "CHAIRMAN_SPEECH": {
     "TITLE_PART1": "Chairman\u0027s",
     "TITLE_PART2": "Message",
-    "QUOTE": "At Qubbah Engineering Consultants, we take pride in being part of the transformative journey aligned with the vision of our beloved Kingdom. We strive to offer innovative and sustainable solutions through our integrated engineering consultancy services, aiming to contribute to building a prosperous and sustainable society. Our vision is embodied in supporting the Kingdom\u0027s aspirations by focusing on human development and delivering added value to our clients, committed to the highest standards of quality.",
-    "NAME": "Eng. Abdulaziz Al-Ajlan",
+    "QUOTE": "At Qubbat Al-Omran Engineering Consultants, we take pride in being part of the transformative journey aligned with the vision of our beloved Kingdom. We strive to offer innovative and sustainable solutions through our integrated engineering consultancy services, aiming to contribute to building a prosperous and sustainable society. Our vision is embodied in supporting the Kingdom\u0027s aspirations by focusing on human development and delivering added value to our clients, committed to the highest standards of quality.",
+    "NAME": "Engineer Abdulaziz Ibrahim Al-Ajlan",
     "TITLE": "Chairman"
   },
-  "Project_Category": {
-    "back": "Back",
-    "no_projects": "No projects in this category."
-  },
+	  "Project_Category": {
+  "back": "Back",
+  "no_projects": "No projects in this category."
+},
   "arabic": "",
   "english": ""
 }

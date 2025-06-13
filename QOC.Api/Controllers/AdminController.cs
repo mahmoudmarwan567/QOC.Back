@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace QOC.Api.Controllers
 {
-    [Authorize(Roles = "Admin")]
     [ApiController]
     [Route("api/admin")]
     public class AdminController : ControllerBase
