@@ -125,9 +125,21 @@ namespace QOC.Infrastructure.Services
                 return (false, "Failed to update user details");
             }
 
-            if (!string.IsNullOrWhiteSpace(request.OldPassword) &&
-                !string.IsNullOrWhiteSpace(request.NewPassword))
+            // تغيير الباسورد فقط لو فيه طلب تغيير فعلا
+            bool wantsToChangePassword =
+                !string.IsNullOrWhiteSpace(request.NewPassword) ||
+                !string.IsNullOrWhiteSpace(request.ConfirmNewPassword);
+
+            if (wantsToChangePassword)
             {
+                // تحقق من أن جميع الحقول مطلوبة لتغيير كلمة السر
+                if (string.IsNullOrWhiteSpace(request.OldPassword))
+                    return (false, "Old password is required to change your password");
+                if (string.IsNullOrWhiteSpace(request.NewPassword) || string.IsNullOrWhiteSpace(request.ConfirmNewPassword))
+                    return (false, "New password and its confirmation are required");
+                if (request.NewPassword != request.ConfirmNewPassword)
+                    return (false, "New password and confirmation must match");
+
                 var passwordCheck = await _userManager.CheckPasswordAsync(user, request.OldPassword);
                 if (!passwordCheck)
                     return (false, "Old password is incorrect");

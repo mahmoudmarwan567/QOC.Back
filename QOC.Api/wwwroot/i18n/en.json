@@ -5,7 +5,10 @@
     "ceo_message": "CHAIRMAN\u2019S SPEECH",
     "blog": "Blog",
     "about": "About Us",
-    "contact": "CONTACT US\n\n"
+    "contact": "CONTACT US\n\n",
+    "categories": "categories",
+    "contact_info": "contact_info",
+    "navigation": "navigation"
   },
   "footer": {
     "contact_info": "Contact info",
@@ -52,10 +55,10 @@
     "NAME": "Engineer Abdulaziz Ibrahim Al-Ajlan",
     "TITLE": "Chairman"
   },
-	  "Project_Category": {
-  "back": "Back",
-  "no_projects": "No projects in this category."
-},
+  "Project_Category": {
+    "back": "Back",
+    "no_projects": "No projects in this category."
+  },
   "arabic": "",
   "english": ""
 }
