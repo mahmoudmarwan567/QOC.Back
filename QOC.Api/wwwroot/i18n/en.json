@@ -46,7 +46,9 @@
     "description": "location",
     "properties": "Properties",
     "backToList": "Back to list",
-    "loading": "Loading data..."
+    "loading": "Loading data...",
+    "previousProject": "previous Project",
+    "nextProject": "next Project"
   },
   "CHAIRMAN_SPEECH": {
     "TITLE_PART1": "Chairman\u0027s",
