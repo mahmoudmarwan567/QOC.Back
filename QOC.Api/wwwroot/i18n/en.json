@@ -48,7 +48,9 @@
     "backToList": "Back to list",
     "loading": "Loading data...",
     "previousProject": "previous Project",
-    "nextProject": "next Project"
+    "nextProject": "next Project",
+    "next": "next Project"
+
   },
   "CHAIRMAN_SPEECH": {
     "TITLE_PART1": "Chairman\u0027s",
