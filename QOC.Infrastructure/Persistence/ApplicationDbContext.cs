@@ -16,6 +16,7 @@ namespace QOC.Infrastructure.Persistence
         public DbSet<CompanyAddress> CompanyAddresses { get; set; }
         public DbSet<CompanyPhone> CompanyPhones { get; set; }
         public DbSet<CompanyEmail> CompanyEmails { get; set; }
+        public DbSet<CompanyDocument> CompanyDocuments { get; set; }
         public DbSet<Slider> Sliders { get; set; }
         public DbSet<AboutUs> AboutUs { get; set; }
         public DbSet<Project> Projects { get; set; }
@@ -25,6 +26,7 @@ namespace QOC.Infrastructure.Persistence
         public DbSet<ProjectCategory> ProjectCategories { get; set; }
         public DbSet<Gallery> Galleries { get; set; }
         public DbSet<Section> Sections { get; set; }
+        public DbSet<ContactMessage> ContactMessages { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {

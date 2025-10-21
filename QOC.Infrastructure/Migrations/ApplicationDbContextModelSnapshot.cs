@@ -299,11 +299,50 @@ namespace QOC.Infrastructure.Migrations
                     b.Property<int>("CompanyId")
                         .HasColumnType("int");
 
+                    b.Property<string>("MapLink")
+                        .HasColumnType("longtext");
+
                     b.HasKey("Id");
 
                     b.HasIndex("CompanyId");
 
                     b.ToTable("CompanyAddresses");
+                });
+
+            modelBuilder.Entity("QOC.Domain.Entities.CompanyDocument", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("CompanyId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("FilePath")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("TitleAR")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("TitleEN")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<DateTime>("UploadedDate")
+                        .HasColumnType("datetime(6)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CompanyId");
+
+                    b.ToTable("CompanyDocuments");
                 });
 
             modelBuilder.Entity("QOC.Domain.Entities.CompanyEmail", b =>
@@ -378,6 +417,51 @@ namespace QOC.Infrastructure.Migrations
                     b.HasIndex("CompanyId");
 
                     b.ToTable("CompanySocials");
+                });
+
+            modelBuilder.Entity("QOC.Domain.Entities.ContactMessage", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("AttachmentOriginalName")
+                        .HasMaxLength(100)
+                        .HasColumnType("varchar(100)");
+
+                    b.Property<string>("AttachmentPath")
+                        .HasMaxLength(500)
+                        .HasColumnType("varchar(500)");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("varchar(200)");
+
+                    b.Property<bool>("IsRead")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<string>("Message")
+                        .IsRequired()
+                        .HasMaxLength(1000)
+                        .HasColumnType("varchar(1000)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("varchar(100)");
+
+                    b.Property<DateTime?>("ReadDate")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<DateTime>("SubmittedDate")
+                        .HasColumnType("datetime(6)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ContactMessages");
                 });
 
             modelBuilder.Entity("QOC.Domain.Entities.Gallery", b =>
@@ -681,6 +765,17 @@ namespace QOC.Infrastructure.Migrations
                     b.Navigation("Company");
                 });
 
+            modelBuilder.Entity("QOC.Domain.Entities.CompanyDocument", b =>
+                {
+                    b.HasOne("QOC.Domain.Entities.Company", "Company")
+                        .WithMany("Documents")
+                        .HasForeignKey("CompanyId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Company");
+                });
+
             modelBuilder.Entity("QOC.Domain.Entities.CompanyEmail", b =>
                 {
                     b.HasOne("QOC.Domain.Entities.Company", "Company")
@@ -739,6 +834,8 @@ namespace QOC.Infrastructure.Migrations
                     b.Navigation("Addresses");
 
                     b.Navigation("CompanySocials");
+
+                    b.Navigation("Documents");
 
                     b.Navigation("Emails");
 

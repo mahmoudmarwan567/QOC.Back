@@ -46,6 +46,7 @@ builder.Services.AddScoped<IServiceService, ServiceService>();
 builder.Services.AddScoped<IProjectCategoryService, ProjectCategoryService>();
 builder.Services.AddScoped<IGalleryService, GalleryService>();
 builder.Services.AddScoped<ISectionService, SectionService>();
+builder.Services.AddScoped<IContactService, ContactService>();
 builder.Services.AddScoped<AuthService>();
 builder.Services.AddScoped<UserService>();
 builder.Services.AddScoped<RoleService>();
@@ -86,4 +87,3 @@ app.UseAuthentication();
 app.MapControllers();
 
 app.Run();
-  

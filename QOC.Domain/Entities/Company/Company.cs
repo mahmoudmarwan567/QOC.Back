@@ -14,6 +14,8 @@
             = new List<CompanyEmail>();
         public List<CompanySocial> CompanySocials { get; set; }
             = new List<CompanySocial>();
+        public ICollection<CompanyDocument> Documents { get; set; }
+            = new List<CompanyDocument>();
     }
 }
 

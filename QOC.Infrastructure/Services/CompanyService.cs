@@ -23,6 +23,7 @@ namespace QOC.Infrastructure.Services
                 .Include(c => c.Phones)
                 .Include(c => c.Emails)
                 .Include(c => c.CompanySocials)
+                .Include(c => c.Documents)
                 .ToListAsync();
 
             var companyDtos = companies.Select(company => new CompanyDto
@@ -31,8 +32,12 @@ namespace QOC.Infrastructure.Services
                 NameAR = company.NameAR,
                 NameEN = company.NameEN,
                 LogoPath = company.Logo,
-                AddressesAR = company.Addresses.Select(a => a.AddressAR).ToList(),
-                AddressesEN = company.Addresses.Select(a => a.AddressEN).ToList(),
+                Addresses = company.Addresses.Select(a => new CompanyAddressDto
+                {
+                    AddressAR = a.AddressAR,
+                    AddressEN = a.AddressEN,
+                    MapLink = a.MapLink
+                }).ToList(),
                 Phones = company.Phones.Select(p => p.PhoneNumber).ToList(),
                 Emails = company.Emails.Select(e => e.Email).ToList(),
                 CompanySocials = company.CompanySocials.Select(cs => new CompanySocialDto
@@ -40,6 +45,15 @@ namespace QOC.Infrastructure.Services
                     NameAR = cs.SocialNameAR,
                     NameEN = cs.SocialNameEN,
                     IconPath = cs.SocialIconPath
+                }).ToList(),
+                Documents = company.Documents.Select(d => new CompanyDocumentDto
+                {
+                    Id = d.Id,
+                    TitleAR = d.TitleAR,
+                    TitleEN = d.TitleEN,
+                    FilePath = d.FilePath,
+                    Description = d.Description,
+                    UploadedDate = d.UploadedDate
                 }).ToList()
             }).ToList();
 
@@ -53,10 +67,11 @@ namespace QOC.Infrastructure.Services
                 NameAR = dto.NameAR,
                 NameEN = dto.NameEN,
                 Logo = dto.LogoPath,
-                Addresses = dto.AddressesEN.Select((addrEN, index) => new CompanyAddress
+                Addresses = dto.Addresses.Select(addr => new CompanyAddress
                 {
-                    AddressEN = addrEN,
-                    AddressAR = dto.AddressesAR.ElementAtOrDefault(index) // Match by index
+                    AddressAR = addr.AddressAR,
+                    AddressEN = addr.AddressEN,
+                    MapLink = addr.MapLink
                 }).ToList(),
                 Phones = dto.Phones.Select(p => new CompanyPhone { PhoneNumber = p }).ToList(),
                 Emails = dto.Emails.Select(e => new CompanyEmail { Email = e }).ToList(),
@@ -65,12 +80,19 @@ namespace QOC.Infrastructure.Services
                     SocialNameAR = cs.NameAR,
                     SocialNameEN = cs.NameEN,
                     SocialIconPath = cs.IconPath
+                }).ToList(),
+                Documents = dto.Documents.Select(d => new CompanyDocument
+                {
+                    TitleAR = d.TitleAR,
+                    TitleEN = d.TitleEN,
+                    FilePath = d.FilePath,
+                    Description = d.Description,
+                    UploadedDate = DateTime.UtcNow
                 }).ToList()
             };
 
             _context.Companies.Add(company);
             await _context.SaveChangesAsync();
-
 
             return new CompanyDto
             {
@@ -78,8 +100,12 @@ namespace QOC.Infrastructure.Services
                 NameAR = company.NameAR,
                 NameEN = company.NameEN,
                 LogoPath = company.Logo,
-                AddressesAR = company.Addresses.Select(a => a.AddressAR).ToList(),
-                AddressesEN = company.Addresses.Select(a => a.AddressEN).ToList(),
+                Addresses = company.Addresses.Select(a => new CompanyAddressDto
+                {
+                    AddressAR = a.AddressAR,
+                    AddressEN = a.AddressEN,
+                    MapLink = a.MapLink
+                }).ToList(),
                 Phones = company.Phones.Select(p => p.PhoneNumber).ToList(),
                 Emails = company.Emails.Select(e => e.Email).ToList(),
                 CompanySocials = company.CompanySocials.Select(cs => new CompanySocialDto
@@ -87,6 +113,15 @@ namespace QOC.Infrastructure.Services
                     NameAR = cs.SocialNameAR,
                     NameEN = cs.SocialNameEN,
                     IconPath = cs.SocialIconPath
+                }).ToList(),
+                Documents = company.Documents.Select(d => new CompanyDocumentDto
+                {
+                    Id = d.Id,
+                    TitleAR = d.TitleAR,
+                    TitleEN = d.TitleEN,
+                    FilePath = d.FilePath,
+                    Description = d.Description,
+                    UploadedDate = d.UploadedDate
                 }).ToList()
             };
         }
@@ -99,6 +134,7 @@ namespace QOC.Infrastructure.Services
                 .Include(c => c.Phones)
                 .Include(c => c.Emails)
                 .Include(c => c.CompanySocials)
+                .Include(c => c.Documents)
                 .FirstOrDefaultAsync(c => c.Id == id);
 
             if (company == null) return null;
@@ -109,8 +145,12 @@ namespace QOC.Infrastructure.Services
                 NameAR = company.NameAR,
                 NameEN = company.NameEN,
                 LogoPath = company.Logo,
-                AddressesAR = company.Addresses.Select(a => a.AddressAR).ToList(),
-                AddressesEN = company.Addresses.Select(a => a.AddressEN).ToList(),
+                Addresses = company.Addresses.Select(a => new CompanyAddressDto
+                {
+                    AddressAR = a.AddressAR,
+                    AddressEN = a.AddressEN,
+                    MapLink = a.MapLink
+                }).ToList(),
                 Phones = company.Phones.Select(p => p.PhoneNumber).ToList(),
                 Emails = company.Emails.Select(e => e.Email).ToList(),
                 CompanySocials = company.CompanySocials.Select(cs => new CompanySocialDto
@@ -118,6 +158,15 @@ namespace QOC.Infrastructure.Services
                     NameAR = cs.SocialNameAR,
                     NameEN = cs.SocialNameEN,
                     IconPath = cs.SocialIconPath
+                }).ToList(),
+                Documents = company.Documents.Select(d => new CompanyDocumentDto
+                {
+                    Id = d.Id,
+                    TitleAR = d.TitleAR,
+                    TitleEN = d.TitleEN,
+                    FilePath = d.FilePath,
+                    Description = d.Description,
+                    UploadedDate = d.UploadedDate
                 }).ToList()
             };
         }
@@ -130,6 +179,7 @@ namespace QOC.Infrastructure.Services
                 .Include(c => c.Phones)
                 .Include(c => c.Emails)
                 .Include(c => c.CompanySocials)
+                .Include(c => c.Documents)
                 .FirstOrDefaultAsync(c => c.Id == id);
 
             if (company == null) return null;
@@ -139,16 +189,18 @@ namespace QOC.Infrastructure.Services
             company.Phones.Clear();
             company.Emails.Clear();
             company.CompanySocials.Clear();
+            company.Documents.Clear();
 
             // Manually update fields
             company.NameAR = dto.NameAR;
             company.NameEN = dto.NameEN;
             company.Logo = dto.LogoPath;
 
-            company.Addresses = dto.AddressesEN.Select((addrEN, index) => new CompanyAddress
+            company.Addresses = dto.Addresses.Select(addr => new CompanyAddress
             {
-                AddressEN = addrEN,
-                AddressAR = dto.AddressesAR.ElementAtOrDefault(index) // Match by index
+                AddressAR = addr.AddressAR,
+                AddressEN = addr.AddressEN,
+                MapLink = addr.MapLink
             }).ToList();
             company.Phones = dto.Phones.Select(p => new CompanyPhone { PhoneNumber = p }).ToList();
             company.Emails = dto.Emails.Select(e => new CompanyEmail { Email = e }).ToList();
@@ -157,6 +209,14 @@ namespace QOC.Infrastructure.Services
                 SocialNameAR = cs.NameAR,
                 SocialNameEN = cs.NameEN,
                 SocialIconPath = cs.IconPath
+            }).ToList();
+            company.Documents = dto.Documents.Select(d => new CompanyDocument
+            {
+                TitleAR = d.TitleAR,
+                TitleEN = d.TitleEN,
+                FilePath = d.FilePath,
+                Description = d.Description,
+                UploadedDate = DateTime.UtcNow
             }).ToList();
 
             await _context.SaveChangesAsync();
@@ -168,8 +228,12 @@ namespace QOC.Infrastructure.Services
                 NameAR = company.NameAR,
                 NameEN = company.NameEN,
                 LogoPath = company.Logo,
-                AddressesAR = company.Addresses.Select(a => a.AddressAR).ToList(),
-                AddressesEN = company.Addresses.Select(a => a.AddressEN).ToList(),
+                Addresses = company.Addresses.Select(a => new CompanyAddressDto
+                {
+                    AddressAR = a.AddressAR,
+                    AddressEN = a.AddressEN,
+                    MapLink = a.MapLink
+                }).ToList(),
                 Phones = company.Phones.Select(p => p.PhoneNumber).ToList(),
                 Emails = company.Emails.Select(e => e.Email).ToList(),
                 CompanySocials = company.CompanySocials.Select(cs => new CompanySocialDto
@@ -177,6 +241,15 @@ namespace QOC.Infrastructure.Services
                     NameAR = cs.SocialNameAR,
                     NameEN = cs.SocialNameEN,
                     IconPath = cs.SocialIconPath
+                }).ToList(),
+                Documents = company.Documents.Select(d => new CompanyDocumentDto
+                {
+                    Id = d.Id,
+                    TitleAR = d.TitleAR,
+                    TitleEN = d.TitleEN,
+                    FilePath = d.FilePath,
+                    Description = d.Description,
+                    UploadedDate = d.UploadedDate
                 }).ToList()
             };
         }
@@ -189,6 +262,7 @@ namespace QOC.Infrastructure.Services
                 .Include(c => c.Addresses)
                 .Include(c => c.Phones)
                 .Include(c => c.Emails)
+                .Include(c => c.Documents)
                 .FirstOrDefaultAsync(c => c.Id == id);
 
             if (company == null) return;

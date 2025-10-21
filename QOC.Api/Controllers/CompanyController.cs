@@ -42,11 +42,9 @@ namespace QOC.Api.Controllers
             }
             catch (Exception ex)
             {
-                // تسجيل الخطأ logging
                 return StatusCode(500, "Internal server error: " + ex.Message);
             }
         }
-
 
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(int id, [FromBody] CompanyRequestDto dto)
@@ -83,9 +81,70 @@ namespace QOC.Api.Controllers
                 await file.CopyToAsync(stream);
             }
 
-            var imageUrl = $"/images/Company/{uniqueFileName}"; // To be served as static file
+            var imageUrl = $"/images/Company/{uniqueFileName}";
             return Ok(new { imageUrl });
         }
 
+        [HttpPost("upload-pdfs")]
+        public async Task<IActionResult> UploadCompanyDocuments([FromForm] List<IFormFile> files)
+        {
+            if (files == null || files.Count == 0)
+                return BadRequest("No files received");
+
+            var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/pdfs/Company");
+            if (!Directory.Exists(uploadsFolder))
+                Directory.CreateDirectory(uploadsFolder);
+
+            var uploadedFiles = new List<object>();
+
+            foreach (var file in files)
+            {
+                if (file.Length == 0)
+                    continue;
+
+                // التحقق من نوع الملف
+                var extension = Path.GetExtension(file.FileName).ToLower();
+                if (extension != ".pdf")
+                {
+                    uploadedFiles.Add(new
+                    {
+                        fileName = file.FileName,
+                        success = false,
+                        error = "Only PDF files are allowed"
+                    });
+                    continue;
+                }
+
+                // التحقق من حجم الملف (حد أقصى 10 ميجا)
+                if (file.Length > 10 * 1024 * 1024)
+                {
+                    uploadedFiles.Add(new
+                    {
+                        fileName = file.FileName,
+                        success = false,
+                        error = "File size cannot exceed 10MB"
+                    });
+                    continue;
+                }
+
+                var uniqueFileName = Guid.NewGuid().ToString() + ".pdf";
+                var filePath = Path.Combine(uploadsFolder, uniqueFileName);
+
+                using (var stream = new FileStream(filePath, FileMode.Create))
+                {
+                    await file.CopyToAsync(stream);
+                }
+
+                var pdfUrl = $"/pdfs/Company/{uniqueFileName}";
+                uploadedFiles.Add(new
+                {
+                    fileName = file.FileName,
+                    success = true,
+                    pdfUrl = pdfUrl
+                });
+            }
+
+            return Ok(new { files = uploadedFiles });
+        }
     }
 }
